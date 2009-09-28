@@ -14,6 +14,8 @@ Build-Type: Simple
 Library
     Build-Depends: base >= 4 && < 5
 
+    Extra-Libraries: gcrypt
+
     Exposed-Modules:
         GCrypt.Base
         GPG.Error
