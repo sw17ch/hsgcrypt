@@ -16,6 +16,7 @@ Library
 
     Exposed-Modules:
         GCrypt.Base
+        GPG.Error
 
     hs-source-dirs:     src
     ghc-options:        -Wall -threaded
