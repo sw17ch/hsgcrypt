@@ -83,7 +83,6 @@ newtype ACFlags = ACFlags Word32
 {#fun gcry_ac_data_encode
     {fromEnumInt `GCry_EncMethod',
      fromIntegral `ACFlags',
-<<<<<<< HEAD:src/GCrypt/Base.chs
      id `GCry_Options',
      id `ACIO',
      id `ACIO'} -> `GCry_Error' fromIntegral#}
