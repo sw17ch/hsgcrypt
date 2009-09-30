@@ -243,6 +243,14 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CUInt -> IO CUInt
         id `Ptr ()'
     } -> `()'#}
 
+{#fun gcry_ac_key_data_get {
+        id `ACKey'
+    } -> `ACData' id#}
+
+{#fun gcry_ac_key_destroy {
+        id `ACKey'        
+    } -> `()'#}
+
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
 fromEnumInt = fromIntegral . fromEnum
