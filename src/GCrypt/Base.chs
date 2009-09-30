@@ -12,7 +12,16 @@ import Data.Word
 
 import GPG.Error
 
-#include "gcrypt.h"
+#include "help.h"
+
+{-
+ - Notes:
+ -
+ - AC (i think) stands for Assymetric Cypher or Crytpography.
+ - 
+ - We don't bind the gcry_ac_io_init_va because it is
+ - redundant over gcry_ac_io_init.
+ -}
 
 {- Pointer types used by libgcrypt -}
 {#pointer gcry_ac_handle_t as ACHandle newtype#}
@@ -24,6 +33,7 @@ import GPG.Error
 
 -- Sometimes we need pointers-to-pointers
 newtype ACDataPtr = ACDataPtr {unACDataPtr :: Ptr ACData}
+newtype ACIOPtr = ACIOPtr {unACIOPtr :: Ptr ACIO}
 newtype ACMPIPtr = ACMPIPtr {unACMPIPtr :: Ptr ACMPI}
 newtype SExpPtr = SExpPtr {unSExpPtr :: Ptr SExp}
 
@@ -35,6 +45,9 @@ type Names = Ptr CString
 {- Enumerations used by libgcrypt -}
 {#enum gcry_ac_em_t as GCry_EncMethod {} deriving (Eq)#}
 {#enum gcry_ac_scheme_t as GCry_Scheme {} deriving (Eq)#}
+{#enum gcry_ac_id_t as GCry_AC_ID {} deriving (Eq)#}
+{#enum gcry_ac_io_mode_t as GCry_AC_IO_Mode {} deriving (Eq)#}
+{#enum gcry_ac_io_type_t as GCry_AC_IO_Type {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
 
@@ -190,6 +203,45 @@ newtype DataIndex = DataIndex Word32 deriving (Integral,Real,Enum,Num,Ord,Eq,Sho
         id `ACIO',
         id `ACIO'
     } -> `GCry_Error' fromIntegral#}
+
+{- DEPRECIATED -}
+{#fun gcry_ac_id_to_name as gcry_ac_id_to_name__DEPRECIATED {
+        fromEnumInt `GCry_AC_ID',
+        id `Ptr CString'
+    } -> `GCry_Error' fromIntegral#}
+
+{- DEPRECIATED -}
+-- Note: the CInt is actually a GCry_AC_ID
+{#fun gcry_ac_name_to_id as gcry_ac_name_to_id__DEPRECIATED {
+        id `CString',
+        id `Ptr CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_ac_io_init_readable_string {
+        id `ACIO',
+        id `Ptr CUChar',
+        id `CUInt'
+    } -> `()'#}
+
+{#fun gcry_ac_io_init_writable_string {
+        id `ACIO',
+        id `Ptr (Ptr CUChar)',
+        id `Ptr CUInt'
+    } -> `()'#}
+
+type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CUInt -> IO CUInt
+{#fun gcry_ac_io_init_readable_callback {
+        id `ACIO',
+        id `FunPtr ReadableCallback',
+        id `Ptr ()'
+    } -> `()'#}
+
+type WritableCallback = Ptr () -> Ptr CUChar -> CUInt -> IO CUInt
+{#fun gcry_ac_io_init_writable_callback {
+        id `ACIO',
+        id `FunPtr WritableCallback',
+        id `Ptr ()'
+    } -> `()'#}
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
