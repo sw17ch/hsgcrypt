@@ -13,13 +13,13 @@ void gcry_ac_io_init_writable_string(gcry_ac_io_t *ac_io,
 }
 
 void gcry_ac_io_init_readable_callback(gcry_ac_io_t *ac_io,
-    gcry_ac_data_read_cb_t cb, void * arg)
+    gcry_ac_data_read_cb_4hs_t cb, void * arg)
 {
     gcry_ac_io_init(ac_io, GCRY_AC_IO_READABLE, GCRY_AC_IO_CALLBACK, cb, arg);
 }
 
 void gcry_ac_io_init_writable_callback(gcry_ac_io_t *ac_io,
-    gcry_ac_data_write_cb_t cb, void * arg)
+    gcry_ac_data_write_cb_4hs_t cb, void * arg)
 {
     gcry_ac_io_init(ac_io, GCRY_AC_IO_WRITABLE, GCRY_AC_IO_CALLBACK, cb, arg);
 }

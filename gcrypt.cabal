@@ -25,6 +25,7 @@ Library
         GPG.Error
 
     ghc-options:        -Wall -threaded
+    cc-options:         -Wall
     hs-source-dirs:     src
     include-dirs:       cbits/
 
