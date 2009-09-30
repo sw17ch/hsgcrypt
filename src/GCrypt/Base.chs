@@ -220,23 +220,23 @@ newtype DataIndex = DataIndex Word32 deriving (Integral,Real,Enum,Num,Ord,Eq,Sho
 {#fun gcry_ac_io_init_readable_string {
         id `ACIO',
         id `Ptr CUChar',
-        id `CUInt'
+        id `CULong'
     } -> `()'#}
 
 {#fun gcry_ac_io_init_writable_string {
         id `ACIO',
         id `Ptr (Ptr CUChar)',
-        id `Ptr CUInt'
+        id `Ptr CULong'
     } -> `()'#}
 
-type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CUInt -> IO CUInt
+type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CULong -> IO CUInt
 {#fun gcry_ac_io_init_readable_callback {
         id `ACIO',
         id `FunPtr ReadableCallback',
         id `Ptr ()'
     } -> `()'#}
 
-type WritableCallback = Ptr () -> Ptr CUChar -> CUInt -> IO CUInt
+type WritableCallback = Ptr () -> Ptr CUChar -> CULong -> IO CUInt
 {#fun gcry_ac_io_init_writable_callback {
         id `ACIO',
         id `FunPtr WritableCallback',
