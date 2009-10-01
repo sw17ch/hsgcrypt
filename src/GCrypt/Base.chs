@@ -305,10 +305,16 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CULong -> IO CUInt
         fromEnumInt `GCry_AC_ID',
         fromIntegral `ACFlags'
     } -> `GCry_Error' fromIntegral#}
-{-
-gcry_error_t gcry_ac_open (gcry_ac_handle_t *handle,
-                           gcry_ac_id_t algorithm, unsigned int flags);
-                           -}
+
+{#fun gcry_calloc {
+        fromIntegral `CSize',
+        fromIntegral `CSize'
+    } -> `Ptr ()' id#}
+
+{#fun gcry_calloc_secure {
+        fromIntegral `CSize',
+        fromIntegral `CSize'
+    } -> `Ptr ()' id#}
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
