@@ -31,6 +31,7 @@ import GPG.Error
 {#pointer gcry_mpi_t as ACMPI newtype#}
 {#pointer gcry_sexp_t as SExp newtype#}
 {#pointer gcry_ac_key_pair_t as ACKeyPair newtype#}
+{#pointer gcry_cipher_hd_t as CipherHd newtype#}
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -327,6 +328,29 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromEnumInt `GCry_Ctl_Cmd',
         id `Ptr ()',
         castPtr `Ptr CSize'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_cipher_algo_name {
+        fromEnumInt `GCry_Cipher_Algo'
+    } -> `CString' id#}
+
+{#fun gcry_cipher_close {
+        id `CipherHd'
+    } -> `()'#}
+
+{#fun gcry_cipher_ctl {
+        id `CipherHd',
+        fromEnumInt `GCry_Ctl_Cmd',
+        id `Ptr ()',
+        fromIntegral `CSize'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_cipher_decrypt {
+        id `CipherHd',
+        id `Ptr ()',
+        fromIntegral `CSize',
+        id `Ptr ()',
+        fromIntegral `CSize'
     } -> `GCry_Error' fromIntegral#}
 
 {- Helper functions to help marshal. -}
