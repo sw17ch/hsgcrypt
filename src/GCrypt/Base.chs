@@ -363,7 +363,30 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromIntegral `CSize'
     } -> `GCry_Error' fromIntegral#}
 
+{-
+ - gcry_error_t gcry_cipher_info (gcry_cipher_hd_t h, int what, void *buffer,
+ -                               size_t *nbytes);
+ -
+ - Return information about the cipher handle H.  CMD is the kind of
+ - information requested.  BUFFER and NBYTES are reserved for now.
+ - 
+ - There are no values for CMD yet defined.  
+ - 
+ - The fucntion always returns GPG_ERR_INV_OP.
+ -}
+{#fun gcry_cipher_info {
+        id `CipherHd',
+        id `CInt',
+        id `Ptr ()',
+        castPtr `Ptr CSize'
+    } -> `GCry_Error' fromIntegral#}
 
+{#fun gcry_cipher_list {
+        id `Ptr CInt',
+        id `Ptr CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+-- gcry_error_t gcry_cipher_list (int *list, int *list_length);
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
 fromEnumInt = fromIntegral . fromEnum
