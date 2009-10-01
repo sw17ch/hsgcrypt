@@ -54,6 +54,8 @@ type Names = Ptr CString
 {#enum gcry_ac_io_mode_t as GCry_AC_IO_Mode {} deriving (Eq)#}
 {#enum gcry_ac_io_type_t as GCry_AC_IO_Type {} deriving (Eq)#}
 {#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq)#}
+{#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq)#}
+{#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
 
@@ -235,17 +237,17 @@ newtype DataIndex = DataIndex Word32 deriving (Integral,Real,Enum,Num,Ord,Eq,Sho
         id `Ptr CULong'
     } -> `()'#}
 
-type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CULong -> IO CUInt
+type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CSize -> IO CUInt
 {#fun gcry_ac_io_init_readable_callback {
         id `ACIO',
-        id `FunPtr ReadableCallback',
+        castFunPtr `FunPtr ReadableCallback',
         id `Ptr ()'
     } -> `()'#}
 
-type WritableCallback = Ptr () -> Ptr CUChar -> CULong -> IO CUInt
+type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_ac_io_init_writable_callback {
         id `ACIO',
-        id `FunPtr WritableCallback',
+        castFunPtr `FunPtr WritableCallback',
         id `Ptr ()'
     } -> `()'#}
 
@@ -315,6 +317,17 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CULong -> IO CUInt
         fromIntegral `CSize',
         fromIntegral `CSize'
     } -> `Ptr ()' id#}
+
+{#fun gcry_check_version {
+        id `CString'
+    } -> `CString' id#}
+
+{#fun gcry_cipher_algo_info {
+        fromEnumInt `GCry_Cipher_Algo',
+        fromEnumInt `GCry_Ctl_Cmd',
+        id `Ptr ()',
+        castPtr `Ptr CSize'
+    } -> `GCry_Error' fromIntegral#}
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
