@@ -30,11 +30,16 @@ import GPG.Error
 {#pointer gcry_ac_key_t as ACKey newtype#}
 {#pointer gcry_mpi_t as ACMPI newtype#}
 {#pointer gcry_sexp_t as SExp newtype#}
+{#pointer gcry_ac_key_pair_t as ACKeyPair newtype#}
 
 -- Sometimes we need pointers-to-pointers
+newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
 newtype ACDataPtr = ACDataPtr {unACDataPtr :: Ptr ACData}
 newtype ACIOPtr = ACIOPtr {unACIOPtr :: Ptr ACIO}
 newtype ACMPIPtr = ACMPIPtr {unACMPIPtr :: Ptr ACMPI}
+newtype ACMPIPtrPtr = ACMPIPtrPtr {unACMPIPtrPtr :: Ptr (Ptr ACMPI)}
+newtype ACKeyPtr = ACKeyPtr {unACKeyPtr :: Ptr ACKey}
+newtype ACKeyPairPtr = ACKeyPairPtr {unACKeyPairPtr :: Ptr ACKeyPair}
 newtype SExpPtr = SExpPtr {unSExpPtr :: Ptr SExp}
 
 -- These will be more concrete later
@@ -48,6 +53,7 @@ type Names = Ptr CString
 {#enum gcry_ac_id_t as GCry_AC_ID {} deriving (Eq)#}
 {#enum gcry_ac_io_mode_t as GCry_AC_IO_Mode {} deriving (Eq)#}
 {#enum gcry_ac_io_type_t as GCry_AC_IO_Type {} deriving (Eq)#}
+{#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
 
@@ -250,6 +256,59 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CULong -> IO CUInt
 {#fun gcry_ac_key_destroy {
         id `ACKey'        
     } -> `()'#}
+
+{#fun gcry_ac_key_get_grip {
+        id `ACHandle',
+        id `ACKey',
+        id `Ptr CUChar'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_ac_key_get_nbits {
+        id `ACHandle',
+        id `ACKey',
+        id `Ptr CUInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_ac_key_init {
+        unACKeyPtr `ACKeyPtr',
+        id `ACHandle',
+        fromEnumInt `GCry_AC_Key_Type',
+        id `ACData'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_ac_key_pair_destroy {
+        id `ACKeyPair'
+    } -> `()'#}
+
+{#fun gcry_ac_key_pair_extract {
+        id `ACKeyPair',
+        fromEnumInt `GCry_AC_Key_Type'
+    } -> `()'#}
+
+-- NOTE: Last parameter is always nullPtr.
+-- Currently unimplemented by libgcrypt.
+{#fun gcry_ac_key_pair_generate {
+        id `ACHandle',
+        id `CUInt',
+        id `Ptr ()',
+        unACKeyPairPtr `ACKeyPairPtr',
+        unACMPIPtrPtr `ACMPIPtrPtr'
+    } -> `()'#}
+
+{#fun gcry_ac_key_test {
+        id `ACHandle',
+        id `ACKey'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_ac_open {
+        unACHandlePtr `ACHandlePtr',
+        fromEnumInt `GCry_AC_ID',
+        fromIntegral `ACFlags'
+    } -> `GCry_Error' fromIntegral#}
+{-
+gcry_error_t gcry_ac_open (gcry_ac_handle_t *handle,
+                           gcry_ac_id_t algorithm, unsigned int flags);
+                           -}
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
