@@ -14,6 +14,8 @@ import GPG.Error
 
 #include "help.h"
 
+{#context lib = "gcrypt" prefix = "gcry"#}
+
 {-
  - Notes:
  -
@@ -352,6 +354,15 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `Ptr ()',
         fromIntegral `CSize'
     } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_cipher_encrypt {
+        id `CipherHd',
+        id `Ptr ()',
+        fromIntegral `CSize',
+        id `Ptr ()',
+        fromIntegral `CSize'
+    } -> `GCry_Error' fromIntegral#}
+
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b

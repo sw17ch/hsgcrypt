@@ -2,6 +2,7 @@
 #define __GCRYPT_HELP__ __GCRYPT_HELP__
 
 #include <gcrypt.h>
+#include <gcrypt-module.h>
 
 
 void gcry_ac_io_init_readable_string(gcry_ac_io_t *ac_io,
