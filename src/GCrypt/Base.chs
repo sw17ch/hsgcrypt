@@ -386,7 +386,14 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `Ptr CInt'
     } -> `GCry_Error' fromIntegral#}
 
--- gcry_error_t gcry_cipher_list (int *list, int *list_length);
+{#fun gcry_cipher_map_name {
+        id `CString'
+    } -> `CInt' id#}
+
+{#fun gcry_cipher_mode_from_oid {
+        id `CString'
+    } -> `CInt' id#}
+
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
 fromEnumInt = fromIntegral . fromEnum
