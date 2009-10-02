@@ -34,6 +34,8 @@ import GPG.Error
 {#pointer gcry_sexp_t as SExp newtype#}
 {#pointer gcry_ac_key_pair_t as ACKeyPair newtype#}
 {#pointer gcry_cipher_hd_t as CipherHd newtype#}
+{#pointer *gcry_cipher_spec_t as CipherSpec newtype#}
+{#pointer gcry_module_t as GCryModule newtype#}
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -44,6 +46,8 @@ newtype ACMPIPtrPtr = ACMPIPtrPtr {unACMPIPtrPtr :: Ptr (Ptr ACMPI)}
 newtype ACKeyPtr = ACKeyPtr {unACKeyPtr :: Ptr ACKey}
 newtype ACKeyPairPtr = ACKeyPairPtr {unACKeyPairPtr :: Ptr ACKeyPair}
 newtype SExpPtr = SExpPtr {unSExpPtr :: Ptr SExp}
+newtype CipherHdPtr = CipherHdPtr { unCipherHdPtr :: Ptr CipherHd }
+newtype GCryModulePtr = GCryModulePtr { unGCryModulePtr :: Ptr GCryModule }
 
 -- These will be more concrete later
 type GCry_Options = Ptr ()
@@ -393,6 +397,19 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_cipher_mode_from_oid {
         id `CString'
     } -> `CInt' id#}
+
+{#fun gcry_cipher_open {
+        unCipherHdPtr `CipherHdPtr',
+        id `CInt',
+        id `CInt',
+        fromIntegral `ACFlags'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_cipher_register {
+        id `CipherSpec',
+        id `Ptr CInt',
+        unGCryModulePtr `GCryModulePtr'
+    } -> `GCry_Error' fromIntegral#}
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
