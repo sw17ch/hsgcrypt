@@ -23,3 +23,13 @@ void gcry_ac_io_init_writable_callback(gcry_ac_io_t *ac_io,
 {
     gcry_ac_io_init(ac_io, GCRY_AC_IO_WRITABLE, GCRY_AC_IO_CALLBACK, cb, arg);
 }
+
+gcry_error_t wrap_gcry_cipher_reset(gcry_cipher_hd_t h)
+{
+    return gcry_cipher_reset(h);
+}
+
+gcry_error_t wrap_gcry_cipher_setctr(gcry_cipher_hd_t h, char * k, size_t l)
+{
+    return gcry_cipher_setctr(h,k,l);
+}
