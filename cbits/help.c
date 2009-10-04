@@ -33,3 +33,18 @@ gcry_error_t wrap_gcry_cipher_setctr(gcry_cipher_hd_t h, char * k, size_t l)
 {
     return gcry_cipher_setctr(h,k,l);
 }
+
+gcry_error_t wrap_gcry_cipher_setiv(gcry_cipher_hd_t h, char * k, size_t l)
+{
+    return gcry_cipher_setiv(h,k,l);
+}
+
+gcry_error_t wrap_gcry_cipher_setkey(gcry_cipher_hd_t h, char * k, size_t l)
+{
+    return gcry_cipher_setkey(h,k,l);
+}
+
+gcry_error_t wrap_gcry_cipher_sync(gcry_cipher_hd_t h)
+{
+    return gcry_cipher_sync(h);
+}

@@ -421,6 +421,26 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromIntegral `CSize'
     } -> `GCry_Error' fromIntegral#}
 
+{#fun wrap_gcry_cipher_setiv as gcry_cipher_setiv {
+        id `CipherHd',
+        id `CString',
+        fromIntegral `CSize'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun wrap_gcry_cipher_setkey as gcry_cipher_setkey {
+        id `CipherHd',
+        id `CString',
+        fromIntegral `CSize'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun wrap_gcry_cipher_sync as gcry_cipher_sync {
+        id `CipherHd'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_cipher_unregister {
+        id `GCryModule'
+    } -> `()'#}
+
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
 fromEnumInt = fromIntegral . fromEnum
