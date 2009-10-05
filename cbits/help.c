@@ -48,3 +48,19 @@ gcry_error_t wrap_gcry_cipher_sync(gcry_cipher_hd_t h)
 {
     return gcry_cipher_sync(h);
 }
+
+/* gcry_control wrappers */
+gcry_error_t wrap_gcry_control_0(enum gcry_ctl_cmds cmd)
+{
+    return gcry_control(cmd);
+}
+
+gcry_error_t wrap_gcry_control_constcharptr(enum gcry_ctl_cmds cmd, const char * ccp)
+{
+    return gcry_control(cmd,ccp);
+}
+
+gcry_error_t wrap_gcry_control_int(enum gcry_ctl_cmds cmd, int i)
+{
+    return gcry_control(cmd,i);
+}

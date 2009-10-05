@@ -441,6 +441,45 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `GCryModule'
     } -> `()'#}
 
+{- gcry_control function bindings. there are a lot of these -}
+
+{- 0 argument commands:
+    GCRYCTL_ENABLE_M_GUARD
+    GCRYCTL_ENABLE_QUICK_RANDOM
+    GCRYCTL_DUMP_RANDOM_STATS
+    GCRYCTL_DUMP_MEMORY_STATS
+    GCRYCTL_DUMP_MEMORY_STATS
+    GCRYCTL_DROP_PRIVS
+    GCRYCTL_DISABLE_SECMEM
+    GCRYCTL_INIT_SECMEM
+    GCRYCTL_TERM_SECMEM
+    GCRYCTL_DISABLE_SECMEM_WARN
+    GCRYCTL_SUSPEND_SECMEM_WARN
+    GCRYCTL_RESUME_SECMEM_WARN
+    GCRYCTL_USE_SECURE_RNDPOOL
+    GCRYCTL_UPDATE_RANDOM_SEED_FILE
+-}
+
+{#fun wrap_gcry_control_0 {
+        fromEnumInt `GCry_Ctl_Cmd'  
+    } -> `GCry_Error' fromIntegral#}
+
+{- 'const char *' commands:
+    GCRYCTL_SET_RANDOM_SEED_FILE
+-}
+{#fun wrap_gcry_control_constcharptr {
+        fromEnumInt `GCry_Ctl_Cmd',
+        id `CString'
+    } -> `GCry_Error' fromIntegral#}
+
+{- 'int' commands:
+    GCRYCTL_SET_VERBOSITY
+-}
+{#fun wrap_gcry_control_int {
+        fromEnumInt `GCry_Ctl_Cmd',
+        id `CInt'
+    } -> `GCry_Error' fromIntegral#}
+
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
 fromEnumInt = fromIntegral . fromEnum
