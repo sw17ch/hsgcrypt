@@ -75,3 +75,7 @@ gcry_error_t wrap_gcry_control_voidptr(enum gcry_ctl_cmds cmd, void * p)
     return gcry_control(cmd,p);
 }
 
+gcry_error_t wrap_gcry_control_fileptr(enum gcry_ctl_cmds cmd, FILE * f)
+{
+    return gcry_control(cmd,f);
+}

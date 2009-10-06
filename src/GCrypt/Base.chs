@@ -466,6 +466,11 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     GCRYCTL_ANY_INITIALIZATION_P
     GCRYCTL_INITIALIZATION_FINISHED
     GCRYCTL_INITIALIZATION_FINISHED_P
+    GCRYCTL_FAST_POLL
+    GCRYCTL_OPERATIONAL_P
+    GCRYCTL_FIPS_MODE_P
+    GCRYCTL_FORCE_FIPS_MODE
+    GCRYCTL_SELFTEST
 -}
 
 {#fun wrap_gcry_control_0 {
@@ -474,6 +479,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {- 'const char *' commands:
     GCRYCTL_SET_RANDOM_SEED_FILE
+    GCRYCTL_SET_RNDEGD_SOCKET
 -}
 {#fun wrap_gcry_control_constcharptr {
         fromEnumInt `GCry_Ctl_Cmd',
@@ -503,4 +509,12 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun wrap_gcry_control_voidptr {
         fromEnumInt `GCry_Ctl_Cmd',
         id `Ptr ()'
+    } -> `GCry_Error' fromIntegral#}
+
+{- 'FILE *' commands:
+   GCRYCTL_PRINT_CONFIG
+-}
+{#fun wrap_gcry_control_fileptr {
+        fromEnumInt `GCry_Ctl_Cmd',
+        castPtr `Ptr CFile'
     } -> `GCry_Error' fromIntegral#}

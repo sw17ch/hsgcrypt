@@ -1,6 +1,7 @@
 #ifndef __GCRYPT_HELP__
 #define __GCRYPT_HELP__ __GCRYPT_HELP__
 
+#include <stdio.h>
 #include <gcrypt.h>
 #include <gcrypt-module.h>
 
@@ -42,4 +43,6 @@ gcry_error_t wrap_gcry_control_uint(enum gcry_ctl_cmds cmd, unsigned int i);
 /* gcry_control, 'void *' */
 gcry_error_t wrap_gcry_control_voidptr(enum gcry_ctl_cmds cmd, void * p);
 
+/* gcry_control, 'FILE *' */
+gcry_error_t wrap_gcry_control_fileptr(enum gcry_ctl_cmds cmd, FILE * f); 
 #endif /* __GCRYPT_HELP__ */
