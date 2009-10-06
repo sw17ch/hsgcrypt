@@ -36,4 +36,10 @@ gcry_error_t wrap_gcry_control_constcharptr(enum gcry_ctl_cmds cmd, const char *
 /* gcry_control, 'int' */
 gcry_error_t wrap_gcry_control_int(enum gcry_ctl_cmds cmd, int i);
 
+/* gcry_control, 'unsigned int' */
+gcry_error_t wrap_gcry_control_uint(enum gcry_ctl_cmds cmd, unsigned int i);
+
+/* gcry_control, 'void *' */
+gcry_error_t wrap_gcry_control_voidptr(enum gcry_ctl_cmds cmd, void * p);
+
 #endif /* __GCRYPT_HELP__ */

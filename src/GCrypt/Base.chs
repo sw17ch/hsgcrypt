@@ -14,6 +14,10 @@ import GPG.Error
 
 #include "help.h"
 
+{- Helper functions to help marshal. -}
+fromEnumInt :: (Num b, Enum a) => a -> b
+fromEnumInt = fromIntegral . fromEnum
+
 {#context lib = "gcrypt" prefix = "gcry"#}
 
 {-
@@ -458,6 +462,10 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     GCRYCTL_RESUME_SECMEM_WARN
     GCRYCTL_USE_SECURE_RNDPOOL
     GCRYCTL_UPDATE_RANDOM_SEED_FILE
+    GCRYCTL_DISABLE_INTERNAL_LOCKING
+    GCRYCTL_ANY_INITIALIZATION_P
+    GCRYCTL_INITIALIZATION_FINISHED
+    GCRYCTL_INITIALIZATION_FINISHED_P
 -}
 
 {#fun wrap_gcry_control_0 {
@@ -480,6 +488,19 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `CInt'
     } -> `GCry_Error' fromIntegral#}
 
-{- Helper functions to help marshal. -}
-fromEnumInt :: (Num b, Enum a) => a -> b
-fromEnumInt = fromIntegral . fromEnum
+{- 'unsigned int' commands:
+    GCRYCTL_SET_DEBUG_FLAGS
+    GCRYCTL_CLEAR_DEBUG_FLAGS
+-}
+{#fun wrap_gcry_control_uint {
+        fromEnumInt `GCry_Ctl_Cmd',
+        id `CUInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{- 'struct auth_ops *' commands:
+    GCRYCTL_SET_THREAD_CBS
+-}
+{#fun wrap_gcry_control_voidptr {
+        fromEnumInt `GCry_Ctl_Cmd',
+        id `Ptr ()'
+    } -> `GCry_Error' fromIntegral#}

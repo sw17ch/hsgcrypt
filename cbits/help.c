@@ -64,3 +64,14 @@ gcry_error_t wrap_gcry_control_int(enum gcry_ctl_cmds cmd, int i)
 {
     return gcry_control(cmd,i);
 }
+
+gcry_error_t wrap_gcry_control_uint(enum gcry_ctl_cmds cmd, unsigned int i)
+{
+    return gcry_control(cmd,i);
+}
+
+gcry_error_t wrap_gcry_control_voidptr(enum gcry_ctl_cmds cmd, void * p)
+{
+    return gcry_control(cmd,p);
+}
+
