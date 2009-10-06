@@ -44,6 +44,7 @@ toIntEnum = toEnum . fromIntegral
 {#pointer gcry_cipher_hd_t as CipherHd newtype#}
 {#pointer *gcry_cipher_spec_t as CipherSpec newtype#}
 {#pointer gcry_module_t as GCryModule newtype#}
+{#pointer gcry_md_hd_t as GCryMdHd newtype#}
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -56,6 +57,7 @@ newtype ACKeyPairPtr = ACKeyPairPtr {unACKeyPairPtr :: Ptr ACKeyPair}
 newtype SExpPtr = SExpPtr {unSExpPtr :: Ptr SExp}
 newtype CipherHdPtr = CipherHdPtr { unCipherHdPtr :: Ptr CipherHd }
 newtype GCryModulePtr = GCryModulePtr { unGCryModulePtr :: Ptr GCryModule }
+newtype GCryMdHdPtr = GCryMdHdPtr {unGCryMdHdPtr :: Ptr GCryMdHd }
 
 -- These will be more concrete later
 type GCry_Options = Ptr ()
@@ -536,10 +538,59 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromIntegral `GCry_Error'
     } -> `GCry_Err_Code' toIntEnum#}
 
-{#fun gcry_error_from_errno {
+{#fun gcry_err_code_from_errno {
         id `CInt'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_err_code_to_errno {
         fromEnumInt `GCry_Err_Code'
     } -> `CInt' id#}
+
+{#fun gcry_err_make {
+        fromEnumInt `GCry_Err_Source',
+        fromEnumInt `GCry_Err_Code'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_err_make_from_errno {
+        fromEnumInt `GCry_Err_Source',
+        id `CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_err_source {
+        fromIntegral `GCry_Error'
+    } -> `GCry_Err_Source' toIntEnum#}
+
+{#fun gcry_error {
+        fromEnumInt `GCry_Err_Code'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_error_from_errno {
+        id `CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{- Appears as though gcry_fips_mode_active is no longer used. -}
+
+{#fun gcry_free {
+        id `Ptr ()'
+    } -> `()'#}
+
+{#fun gcry_malloc {
+        fromIntegral `CSize'
+    } -> `()'#}
+
+{#fun gcry_malloc_secure {
+        fromIntegral `CSize'
+    } -> `()'#}
+
+{#fun gcry_md_algo_name {
+        id `CInt'
+    } -> `CString' id#}
+
+{#fun gcry_md_close {
+        id `GCryMdHd'
+    } -> `()'#}
+
+{#fun gcry_md_copy {
+        unGCryMdHdPtr `GCryMdHdPtr',
+        id `GCryMdHd'
+    } -> `GCry_Error' fromIntegral#}
