@@ -9,6 +9,7 @@ import Foreign.C.String
 import Foreign.Ptr
 
 import Data.Word
+import Data.Int
 
 import GPG.Error
 
@@ -17,6 +18,9 @@ import GPG.Error
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b
 fromEnumInt = fromIntegral . fromEnum
+
+toIntEnum :: (Integral a, Enum b) => a -> b
+toIntEnum = toEnum . fromIntegral
 
 {#context lib = "gcrypt" prefix = "gcry"#}
 
@@ -69,6 +73,8 @@ type Names = Ptr CString
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
+type GCry_Err_Code = GPG_Err_Code
+type GCry_Err_Source = GPG_Err_Source
 
 {- Aliased types for libgcrypt -}
 newtype ACFlags   = ACFlags Word32   deriving (Integral,Real,Enum,Num,Ord,Eq,Show)
@@ -518,3 +524,22 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromEnumInt `GCry_Ctl_Cmd',
         castPtr `Ptr CFile'
     } -> `GCry_Error' fromIntegral#}
+
+{- End gcry_control -}
+
+{#fun gcry_create_nonce {
+        id `Ptr ()',
+        fromIntegral `CSize'
+    } -> `()'#}
+
+{#fun gcry_err_code {
+        fromIntegral `GCry_Error'
+    } -> `GCry_Err_Code' toIntEnum#}
+
+{#fun gcry_error_from_errno {
+        id `CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_err_code_to_errno {
+        fromEnumInt `GCry_Err_Code'
+    } -> `CInt' id#}
