@@ -773,3 +773,70 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `ACMPI', -- divisor
         id `CInt'   -- round
     } -> `()'#}
+
+{#fun gcry_mpi_dump {
+        id `ACMPI'
+    } -> `()'#}
+
+{#fun gcry_mpi_gcd {
+        id `ACMPI', -- g
+        id `ACMPI', -- a
+        id `ACMPI'  -- b
+    } -> `CInt' id#}
+
+{#fun gcry_mpi_get_flag {
+        id `ACMPI',
+        fromEnumInt `GCry_MPI_Flag'
+    } -> `CInt' id#}
+
+{#fun gcry_mpi_get_nbits {
+        id `ACMPI'
+    } -> `CUInt' id#}
+
+{#fun gcry_mpi_get_opaque {
+        id `ACMPI',
+        id `Ptr CUInt'
+    } -> `Ptr ()' id#}
+
+{#fun gcry_mpi_invm {
+        id `ACMPI', -- x
+        id `ACMPI', -- a
+        id `ACMPI'  -- m
+    } -> `CInt' id#}
+
+{- 1.4.1 doesn't implement lshift. TODO: implement in 1.4.4 -}
+
+{#fun gcry_mpi_mod {
+        id `ACMPI', -- r
+        id `ACMPI', -- dividend
+        id `ACMPI'  -- divisor
+    } -> `()'#}
+
+-- w = u * v
+{#fun gcry_mpi_mul {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `ACMPI'  -- v
+    } -> `()'#}
+
+-- w = u * 2^e
+{#fun gcry_mpi_mul_2exp {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `CULong' -- e
+    } -> `()'#}
+
+-- w = u * v
+{#fun gcry_mpi_mul_ui {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `CULong' -- v
+    } -> `()'#}
+
+-- w = u * v `mod` m
+{#fun gcry_mpi_mulm {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `ACMPI', -- v
+        id `ACMPI'  -- m
+    } -> `()'#}
