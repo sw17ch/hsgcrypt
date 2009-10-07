@@ -79,6 +79,7 @@ type Names = Ptr CString
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
 {#enum gcry_mpi_format as GCry_MPI_Format {} deriving (Eq)#}
 {#enum gcry_mpi_flag as GCry_MPI_Flag {} deriving (Eq)#}
+{#enum gcry_random_level as GCry_Random_Level {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
 type GCry_Err_Code = GPG_Err_Code
@@ -839,4 +840,68 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `ACMPI', -- u
         id `ACMPI', -- v
         id `ACMPI'  -- m
+    } -> `()'#}
+
+{#fun gcry_mpi_new {
+        id `CUInt'
+    } -> `ACMPI' id#}
+
+-- w = b^e `mod` m
+{#fun gcry_mpi_powm {
+        id `ACMPI', -- w
+        id `ACMPI', -- b
+        id `ACMPI', -- e
+        id `ACMPI'  -- m
+    } -> `()'#}
+
+{#fun gcry_mpi_print {
+        fromEnumInt `GCry_MPI_Format',
+        id `Ptr CUChar',
+        fromIntegral `CSize',
+        id `CSizePtr',
+        id `ACMPI'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_mpi_randomize {
+        id `ACMPI',
+        id `CUInt',
+        fromEnumInt `GCry_Random_Level'
+    } -> `()'#}
+
+{#fun gcry_mpi_release {
+        id `ACMPI'
+    } -> `()'#}
+
+{#fun gcry_mpi_rshift {
+        id `ACMPI',
+        id `ACMPI',
+        id `CUInt'
+    } -> `()'#}
+
+{#fun gcry_mpi_scan {
+        unACMPIPtr `ACMPIPtr', -- r_mpi
+        fromEnumInt `GCry_MPI_Format', -- format
+        id `Ptr ()', -- buffer
+        fromIntegral `CSize', -- buflen
+        id `CSizePtr' -- nscanned
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_mpi_set {
+        id `ACMPI',
+        id `ACMPI'
+    } -> `ACMPI' id#}
+
+{#fun gcry_mpi_set_bit {
+        id `ACMPI',
+        id `CUInt'
+    } -> `()'#}
+
+{#fun gcry_mpi_set_flag {
+        id `ACMPI',
+        fromEnumInt `GCry_MPI_Flag'
+    } -> `()'#}
+
+{#fun gcry_mpi_set_highbit {
+        id `ACMPI',
+        id `CUInt'
     } -> `()'#}
