@@ -79,3 +79,33 @@ gcry_error_t wrap_gcry_control_fileptr(enum gcry_ctl_cmds cmd, FILE * f)
 {
     return gcry_control(cmd,f);
 }
+
+void wrap_gcry_md_final(gcry_md_hd_t h)
+{
+    gcry_md_final(h);
+}
+
+gcry_error_t wrap_gcry_md_get_asnoid(int algo, void * buffer, size_t * length)
+{
+    return gcry_md_get_asnoid(algo, buffer, length);
+}
+
+void wrap_gcry_md_putc(gcry_md_hd_t h, int c)
+{
+    gcry_md_putc(h,c);
+}
+
+void wrap_gcry_md_start_debug(gcry_md_hd_t h, const char * suffix)
+{
+    gcry_md_start_debug(h,(void*)suffix);
+}
+
+void wrap_gcry_md_stop_debug(gcry_md_hd_t h, const char * suffix)
+{
+    gcry_md_stop_debug(h,(void*)suffix);
+}
+
+gcry_error_t wrap_gcry_md_test_algo(int algo)
+{
+    return gcry_md_test_algo(algo);
+}

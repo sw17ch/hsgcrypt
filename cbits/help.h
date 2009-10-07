@@ -45,4 +45,14 @@ gcry_error_t wrap_gcry_control_voidptr(enum gcry_ctl_cmds cmd, void * p);
 
 /* gcry_control, 'FILE *' */
 gcry_error_t wrap_gcry_control_fileptr(enum gcry_ctl_cmds cmd, FILE * f); 
+
+/* End of gcry_control wrappers */
+
+void wrap_gcry_md_final(gcry_md_hd_t h);
+gcry_error_t wrap_gcry_md_get_asnoid(int algo, void * buffer, size_t * length);
+void wrap_gcry_md_putc(gcry_md_hd_t h, int c);
+void wrap_gcry_md_start_debug(gcry_md_hd_t h, const char * suffix);
+void wrap_gcry_md_stop_debug(gcry_md_hd_t h, const char * suffix);
+gcry_error_t wrap_gcry_md_test_algo(int algo);
+
 #endif /* __GCRYPT_HELP__ */

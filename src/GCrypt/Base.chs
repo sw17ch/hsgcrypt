@@ -24,6 +24,9 @@ toIntEnum = toEnum . fromIntegral
 
 {#context lib = "gcrypt" prefix = "gcry"#}
 
+-- This comes into play more than it should
+{#pointer *size_t as CSizePtr newtype#}
+
 {-
  - Notes:
  -
@@ -45,6 +48,7 @@ toIntEnum = toEnum . fromIntegral
 {#pointer *gcry_cipher_spec_t as CipherSpec newtype#}
 {#pointer gcry_module_t as GCryModule newtype#}
 {#pointer gcry_md_hd_t as GCryMdHd newtype#}
+{#pointer *gcry_md_spec_t as GCryMdSpec newtype#}
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -345,7 +349,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromEnumInt `GCry_Cipher_Algo',
         fromEnumInt `GCry_Ctl_Cmd',
         id `Ptr ()',
-        castPtr `Ptr CSize'
+        id `CSizePtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_cipher_algo_name {
@@ -394,7 +398,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `CipherHd',
         id `CInt',
         id `Ptr ()',
-        castPtr `Ptr CSize'
+        id `CSizePtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_cipher_list {
@@ -481,7 +485,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     GCRYCTL_SELFTEST
 -}
 
-{#fun wrap_gcry_control_0 {
+{#fun wrap_gcry_control_0 as gcry_control_0 {
         fromEnumInt `GCry_Ctl_Cmd'  
     } -> `GCry_Error' fromIntegral#}
 
@@ -489,7 +493,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     GCRYCTL_SET_RANDOM_SEED_FILE
     GCRYCTL_SET_RNDEGD_SOCKET
 -}
-{#fun wrap_gcry_control_constcharptr {
+{#fun wrap_gcry_control_constcharptr as gcry_control_constcharptr {
         fromEnumInt `GCry_Ctl_Cmd',
         id `CString'
     } -> `GCry_Error' fromIntegral#}
@@ -497,7 +501,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {- 'int' commands:
     GCRYCTL_SET_VERBOSITY
 -}
-{#fun wrap_gcry_control_int {
+{#fun wrap_gcry_control_int as gcry_control_int {
         fromEnumInt `GCry_Ctl_Cmd',
         id `CInt'
     } -> `GCry_Error' fromIntegral#}
@@ -506,7 +510,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     GCRYCTL_SET_DEBUG_FLAGS
     GCRYCTL_CLEAR_DEBUG_FLAGS
 -}
-{#fun wrap_gcry_control_uint {
+{#fun wrap_gcry_control_uint as gcry_control_uint {
         fromEnumInt `GCry_Ctl_Cmd',
         id `CUInt'
     } -> `GCry_Error' fromIntegral#}
@@ -514,7 +518,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {- 'struct auth_ops *' commands:
     GCRYCTL_SET_THREAD_CBS
 -}
-{#fun wrap_gcry_control_voidptr {
+{#fun wrap_gcry_control_voidptr as gcry_control_voidptr {
         fromEnumInt `GCry_Ctl_Cmd',
         id `Ptr ()'
     } -> `GCry_Error' fromIntegral#}
@@ -522,7 +526,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {- 'FILE *' commands:
    GCRYCTL_PRINT_CONFIG
 -}
-{#fun wrap_gcry_control_fileptr {
+{#fun wrap_gcry_control_fileptr as gcry_control_fileptr {
         fromEnumInt `GCry_Ctl_Cmd',
         castPtr `Ptr CFile'
     } -> `GCry_Error' fromIntegral#}
@@ -594,3 +598,107 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         unGCryMdHdPtr `GCryMdHdPtr',
         id `GCryMdHd'
     } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_md_debug {
+        id `GCryMdHd',
+        id `CString'
+    } -> `()'#}
+
+{#fun gcry_md_enable {
+        id `GCryMdHd',
+        id `CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun wrap_gcry_md_final as gcry_md_final {
+        id `GCryMdHd'
+    } -> `()'#}
+
+{#fun gcry_md_get_algo {
+        id `GCryMdHd'
+    } -> `CInt' id#}
+
+{#fun gcry_md_get_algo_dlen {
+        id `CInt'
+    } -> `CUInt' id#} 
+
+{#fun wrap_gcry_md_get_asnoid as gcry_md_get_asnoid {
+        id `CInt',
+        id `Ptr ()',
+        id `CSizePtr'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_md_hash_buffer {
+        id `CInt',           -- Algo
+        id `Ptr ()',         -- Digest
+        id `Ptr ()',         -- Buffer
+        fromIntegral `CSize' -- Length
+    } -> `()'#}
+
+{#fun gcry_md_is_enabled {
+        id `GCryMdHd',
+        id `CInt'
+    } -> `CInt' id#} 
+
+{#fun gcry_md_is_secure {
+        id `GCryMdHd'
+    } -> `CInt' id#} 
+
+{#fun gcry_md_list {
+        id `Ptr CInt', -- List
+        id `Ptr CInt'  -- List Length
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_md_map_name {
+        id `CString'
+    } -> `CInt' id#} 
+
+{#fun gcry_md_open {
+        unGCryMdHdPtr `GCryMdHdPtr', -- hd
+        id `CInt',                   -- algo
+        id `CUInt'                   -- flags
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun wrap_gcry_md_putc as gcry_md_putc {
+        id `GCryMdHd',
+        id `CInt'
+    } -> `()'#}
+
+{#fun gcry_md_read {
+        id `GCryMdHd',
+        id `CInt'
+    } -> `Ptr CUChar' id#}
+
+{#fun gcry_md_register {
+        id `GCryMdSpec',
+        id `Ptr CUInt',
+        unGCryModulePtr `GCryModulePtr'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_md_reset {
+        id `GCryMdHd'
+    } -> `()'#}
+
+{#fun gcry_md_setkey {
+        id `GCryMdHd', -- hd
+        id `Ptr ()',   -- key
+        fromIntegral `CSize' -- keylen
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun wrap_gcry_md_start_debug as gcry_md_start_debug {
+        id `GCryMdHd', -- hd
+        id `CString'
+    } -> `()'#}
+
+{#fun wrap_gcry_md_test_algo as gcry_md_test_algo {
+        id `CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_md_unregister {
+        id `GCryModule'
+    } -> `()'#}
+
+{#fun gcry_md_write {
+        id `GCryMdHd', -- hd
+        id `Ptr ()',   -- buffer
+        fromIntegral `CSize' -- length
+    } -> `()'#}
