@@ -77,6 +77,8 @@ type Names = Ptr CString
 {#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq)#}
 {#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq)#}
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
+{#enum gcry_mpi_format as GCry_MPI_Format {} deriving (Eq)#}
+{#enum gcry_mpi_flag as GCry_MPI_Flag {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
 type GCry_Err_Code = GPG_Err_Code
@@ -701,4 +703,73 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `GCryMdHd', -- hd
         id `Ptr ()',   -- buffer
         fromIntegral `CSize' -- length
+    } -> `()'#}
+
+-- w = u + v
+{#fun gcry_mpi_add {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `ACMPI'  -- v
+    } -> `()'#}
+
+-- w = u + v
+{#fun gcry_mpi_add_ui {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `CULong'   -- v
+    } -> `()'#}
+
+-- w = u + v mod M
+{#fun gcry_mpi_addm {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `ACMPI', -- v
+        id `ACMPI'  -- m
+    } -> `()'#}
+
+{#fun gcry_mpi_aprint {
+        fromEnumInt `GCry_MPI_Format',
+        id `Ptr (Ptr CUChar)',
+        id `CSizePtr',
+        id `ACMPI'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_mpi_clear_bit {
+        id `ACMPI',
+        id `CUInt'
+    } -> `()'#}
+
+{#fun gcry_mpi_clear_flag {
+        id `ACMPI',
+        fromEnumInt `GCry_MPI_Flag'
+    } -> `()'#}
+
+{#fun gcry_mpi_clear_highbit {
+        id `ACMPI',
+        id `CUInt'
+    } -> `()'#}
+
+-- u = v ->  0
+-- u < v -> -1
+-- u > v ->  1
+{#fun gcry_mpi_cmp {
+        id `ACMPI', -- u
+        id `ACMPI'  -- v
+    } -> `CInt' id#}
+
+{#fun gcry_mpi_cmp_ui {
+        id `ACMPI', -- u
+        id `CULong' -- v
+    } -> `CInt' id#}
+
+{#fun gcry_mpi_copy {
+        id `ACMPI'
+    } -> `ACMPI' id#}
+
+{#fun gcry_mpi_div {
+        id `ACMPI', -- q
+        id `ACMPI', -- r
+        id `ACMPI', -- dividend
+        id `ACMPI', -- divisor
+        id `CInt'   -- round
     } -> `()'#}
