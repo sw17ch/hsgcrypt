@@ -905,3 +905,50 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `ACMPI',
         id `CUInt'
     } -> `()'#}
+
+{#fun gcry_mpi_set_opaque {
+        id `ACMPI',
+        id `Ptr ()',
+        id `CUInt'
+    } -> `ACMPI' id#}
+
+{#fun gcry_mpi_set_ui {
+        id `ACMPI',
+        id `CULong'
+    } -> `ACMPI' id#}
+
+{#fun gcry_mpi_snew {
+        id `CUInt'
+    } -> `ACMPI' id#}
+
+-- w = u - v
+{#fun gcry_mpi_sub {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `ACMPI'  -- v
+    } -> `()'#}
+
+-- w = u - v
+{#fun gcry_mpi_sub_ui {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `CULong'  -- v
+    } -> `()'#}
+
+-- w = u - v `mod` m
+{#fun gcry_mpi_subm {
+        id `ACMPI', -- w
+        id `ACMPI', -- u
+        id `ACMPI', -- v
+        id `ACMPI'  -- m
+    } -> `()'#}
+
+{#fun gcry_mpi_swap {
+        id `ACMPI',
+        id `ACMPI'
+    } -> `()'#}
+
+{#fun gcry_mpi_test_bit {
+        id `ACMPI',
+        id `CUInt'
+    } -> `CInt' id#}
