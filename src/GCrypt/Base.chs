@@ -952,3 +952,46 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `ACMPI',
         id `CUInt'
     } -> `CInt' id#}
+
+{#fun gcry_pk_algo_info {
+        id `CInt',
+        id `CInt',
+        id `Ptr ()',
+        id `CSizePtr'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_algo_name {
+        id `CInt'
+    } -> `CString' id#}
+
+{#fun gcry_pk_ctl {
+        id `CInt',
+        id `Ptr ()',
+        fromIntegral `CSize'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_decrypt {
+        unSExpPtr `SExpPtr', -- r_plain
+        id `SExp',           -- data
+        id `SExp'            -- skey
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_encrypt {
+        unSExpPtr `SExpPtr', -- r_ciph
+        id `SExp',           -- data
+        id `SExp'            -- pkey
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_genkey {
+        unSExpPtr `SExpPtr', -- r_key
+        id `SExp'            -- params
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_get_keygrip {
+        id `SExp',      -- key
+        id `Ptr CUChar' -- array
+    } -> `Ptr CUChar' id#}
+
+{#fun gcry_pk_get_nbits {
+        id `SExp' -- key
+    } -> `CUInt' id#}
