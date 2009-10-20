@@ -49,6 +49,7 @@ toIntEnum = toEnum . fromIntegral
 {#pointer gcry_module_t as GCryModule newtype#}
 {#pointer gcry_md_hd_t as GCryMdHd newtype#}
 {#pointer *gcry_md_spec_t as GCryMdSpec newtype#}
+{#pointer *gcry_pk_spec_t as GCryPkSpec newtype#}
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -995,3 +996,42 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_pk_get_nbits {
         id `SExp' -- key
     } -> `CUInt' id#}
+
+{#fun gcry_pk_list {
+        id `Ptr CInt',
+        id `Ptr CInt'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_map_name {
+        id `CString'
+    } -> `CInt' id#}
+
+{#fun gcry_pk_register {
+        id `GCryPkSpec', -- pubkey
+        id `Ptr CUInt', -- algorithm id
+        unGCryModulePtr `GCryModulePtr' -- module 
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_sign {
+        unSExpPtr `SExpPtr', -- r_sig
+        id `SExp', -- data
+        id `SExp'  -- skey
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun wrap_gcry_pk_test_algo as gcry_pk_test_algo {
+        id `CInt' -- algo
+    } -> `CInt' id#}
+
+{#fun gcry_pk_testkey {
+        id `SExp' -- key
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_pk_unregister {
+        id `GCryModule'
+    } -> `()'#}
+
+{#fun gcry_pk_verify {
+        id `SExp', -- sig
+        id `SExp', -- data
+        id `SExp'  -- pkey
+    } -> `GCry_Error' fromIntegral#}

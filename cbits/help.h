@@ -54,5 +54,7 @@ void wrap_gcry_md_putc(gcry_md_hd_t h, int c);
 void wrap_gcry_md_start_debug(gcry_md_hd_t h, const char * suffix);
 void wrap_gcry_md_stop_debug(gcry_md_hd_t h, const char * suffix);
 gcry_error_t wrap_gcry_md_test_algo(int algo);
+int wrap_gcry_pk_test_algo(int algo);
 
 #endif /* __GCRYPT_HELP__ */
+

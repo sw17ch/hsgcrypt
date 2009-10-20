@@ -109,3 +109,8 @@ gcry_error_t wrap_gcry_md_test_algo(int algo)
 {
     return gcry_md_test_algo(algo);
 }
+
+int wrap_gcry_pk_test_algo(int algo)
+{
+    return gcry_pk_test_algo(algo);
+}
