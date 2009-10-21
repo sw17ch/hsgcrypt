@@ -23,6 +23,12 @@ Library
     Exposed-Modules:
         GCrypt.Base
         GCrypt.AsymmetricCrypto
+        GCrypt.AsymmetricCrypto.IO
+        GCrypt.AsymmetricCrypto.Keys
+        GCrypt.AsymmetricCrypto.Handles
+        GCrypt.AsymmetricCrypto.Other
+        GCrypt.AsymmetricCrypto.Crypto
+        GCrypt.AsymmetricCrypto.Data
         GPG.Error
 
     ghc-options:        -Wall -threaded
