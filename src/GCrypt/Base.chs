@@ -1035,3 +1035,93 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `SExp', -- data
         id `SExp'  -- pkey
     } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_prime_check {
+        id `ACMPI',
+        fromIntegral `ACFlags'
+    } -> `GCry_Error' fromIntegral#}
+
+type PrimeCheckFun = FunPtr (Ptr () -> CInt -> ACMPI -> IO CInt)
+
+{#fun gcry_prime_generate {
+        unACMPIPtr `ACMPIPtr', -- prime
+        id `CUInt',            -- prime bits
+        id `CUInt',            -- prime factor
+        unACMPIPtrPtr `ACMPIPtrPtr', -- factors
+        id `PrimeCheckFun',    -- cb_func
+        id `Ptr ()',           -- cb_arg
+        fromEnumInt `GCry_Random_Level', -- random level
+        fromIntegral `ACFlags'
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_prime_group_generator {
+        unACMPIPtr `ACMPIPtr', -- g
+        id `ACMPI', -- prime
+        unACMPIPtr `ACMPIPtr', -- factors
+        id `ACMPI' -- start
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_prime_release_factors {
+        unACMPIPtr `ACMPIPtr' -- factors
+    } -> `()'#}
+
+{#fun gcry_random_bytes {
+        fromIntegral `CSize',
+        fromEnumInt `GCry_Random_Level'
+    } -> `Ptr ()' id#}
+
+{#fun gcry_random_bytes_secure {
+        fromIntegral `CSize',
+        fromEnumInt `GCry_Random_Level'
+    } -> `Ptr ()' id#}
+
+{#fun gcry_randomize {
+        id `Ptr ()', -- buffer
+        fromIntegral `CSize', -- length
+        fromEnumInt `GCry_Random_Level' -- level
+    } -> `()'#}
+
+{#fun gcry_realloc {
+        id `Ptr ()', -- p
+        fromIntegral `CSize' -- n
+    } -> `Ptr ()' id#}
+
+type FuncAlloc = FunPtr (CUInt -> IO (Ptr ()))
+type FuncAllocSecure = FunPtr (CUInt -> IO (Ptr ()))
+type FuncSecureCheck = FunPtr (Ptr () -> IO CInt)
+type FuncRealloc = FunPtr (Ptr () -> CUInt -> IO (Ptr ()))
+type FuncFree = FunPtr (Ptr () -> IO ())
+
+{#fun gcry_set_allocation_handler {
+        id `FuncAlloc',
+        id `FuncAllocSecure',
+        id `FuncSecureCheck',
+        id `FuncRealloc',
+        id `FuncFree'
+    } -> `()'#}
+
+type FuncError = FunPtr (Ptr () -> CInt -> Ptr CChar -> IO ())
+
+{#fun gcry_set_fatalerror_handler {
+        id `FuncError',
+        id `Ptr ()' -- cb_data
+    } -> `()'#}
+
+{- TODO: This Breaks: va_list
+{#fun gcry_set_log_handler {
+    } -> `()'#}
+    -}
+
+type FunNoMem = FunPtr (Ptr () -> CUInt -> CUInt -> IO CInt)
+
+{#fun gcry_set_outofcore_handler {
+        id `FunNoMem',
+        id `Ptr ()' -- cb_data
+    } -> `()'#}
+
+type FunProgress = FunPtr (Ptr () -> Ptr CChar -> CInt -> CInt -> CInt -> IO ())
+
+{#fun gcry_set_progress_handler {
+        id `FunProgress',
+        id `Ptr ()'  -- cb_data
+    } -> `()'#}
