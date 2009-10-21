@@ -1125,3 +1125,9 @@ type FunProgress = FunPtr (Ptr () -> Ptr CChar -> CInt -> CInt -> CInt -> IO ())
         id `FunProgress',
         id `Ptr ()'  -- cb_data
     } -> `()'#}
+
+{- gcry_sexp_build uses varargs. Use gcry_sexp_build_array.
+{#fun gcry_sexp_build {
+        id `SExpPtr', -- sexp
+    } -> `GCry_Error' fromIntegral#}
+-}
