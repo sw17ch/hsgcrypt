@@ -50,6 +50,7 @@ toIntEnum = toEnum . fromIntegral
 {#pointer gcry_md_hd_t as GCryMdHd newtype#}
 {#pointer *gcry_md_spec_t as GCryMdSpec newtype#}
 {#pointer *gcry_pk_spec_t as GCryPkSpec newtype#}
+{#pointer *gcry_error_t as GCry_Error_Ptr newtype#}
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -1131,3 +1132,115 @@ type FunProgress = FunPtr (Ptr () -> Ptr CChar -> CInt -> CInt -> CInt -> IO ())
         id `SExpPtr', -- sexp
     } -> `GCry_Error' fromIntegral#}
 -}
+
+{#fun gcry_sexp_build_array {
+        unSExpPtr `SExpPtr', -- retsexp
+        id `CSizePtr', -- erroff
+        id `CString', -- format
+        id `Ptr (Ptr ())' -- arg_list
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_sexp_canon_len {
+        id `Ptr CUChar', -- buffer
+        fromIntegral `CSize', -- length
+        id `CSizePtr', -- erroff
+        id `Ptr CUInt' -- errcode
+    } -> `CSize' fromIntegral#}
+
+{#fun gcry_sexp_car {
+        id `SExp'
+    } -> `SExp' id#}
+
+{#fun gcry_sexp_cdr {
+        id `SExp'
+    } -> `SExp' id#}
+
+type FunFreeFunc = FunPtr (Ptr () -> IO ())
+
+{#fun gcry_sexp_create {
+        unSExpPtr `SExpPtr', -- retsexp
+        id `Ptr ()', -- buffer
+        fromIntegral `CSize', -- length
+        id `CInt', -- autodetect
+        id `FunFreeFunc' -- freefnc
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_sexp_dump {
+        id `SExp'
+    } -> `()'#}
+
+{#fun gcry_sexp_find_token {
+        id `SExp',
+        id `CString',
+        fromIntegral `CSize'
+    } -> `SExp' id#}
+
+{#fun gcry_sexp_length {
+        id `SExp'
+    } -> `CInt' id#}
+
+{#fun gcry_sexp_new {
+        unSExpPtr `SExpPtr', -- retsexp
+        id `Ptr ()', -- buffer
+        fromIntegral `CSize', -- lenght
+        id `CInt' -- autodetect
+    } -> `GCry_Error' fromIntegral#}
+
+{#fun gcry_sexp_nth {
+        id `SExp', -- list
+        id `CInt'  -- number
+    } -> `SExp' id#}
+
+{#fun gcry_sexp_nth_data {
+        id `SExp', -- list
+        id `CInt', -- number 
+        id `CSizePtr' -- datalen
+    } -> `CString' id#}
+
+{#fun gcry_sexp_nth_mpi {
+        id `SExp', -- list
+        id `CInt', -- number
+        id `CInt'  -- mpifmt
+    } -> `ACMPI' id#}
+
+{#fun gcry_sexp_nth_string {
+        id `SExp', -- list
+        id `CInt'  -- number
+    } -> `CString' id#}
+
+{#fun gcry_sexp_release {
+        id `SExp'
+    } -> `()'#}
+
+{#fun gcry_sexp_sprint {
+        id `SExp', -- sexp
+        id `CInt', -- mode
+        id `Ptr ()', -- buffer
+        fromIntegral `CSize' -- maxlength
+    } -> `CSize' fromIntegral#}
+
+{#fun gcry_sexp_sscan {
+        unSExpPtr `SExpPtr', -- retsexp
+        id `CSizePtr', -- erroff
+        id `CString', -- buffer
+        fromIntegral `CSize'
+    } -> `GCry_Error' fromIntegral#}
+
+{- The following sexp functions aren't called out by the docs:
+
+gcry_sexp_t gcry_sexp_cons (const gcry_sexp_t a, const gcry_sexp_t b);
+gcry_sexp_t gcry_sexp_alist (const gcry_sexp_t *array);
+gcry_sexp_t gcry_sexp_vlist (const gcry_sexp_t a, ...);
+gcry_sexp_t gcry_sexp_append (const gcry_sexp_t a, const gcry_sexp_t n);
+gcry_sexp_t gcry_sexp_prepend (const gcry_sexp_t a, const gcry_sexp_t n);
+gcry_sexp_t gcry_sexp_cadr (const gcry_sexp_t list);
+
+-}
+
+{#fun gcry_strerror {
+        fromIntegral `GCry_Error'
+    } -> `CString' id#}
+
+{#fun gcry_strsource {
+        fromIntegral `GCry_Error'
+    } -> `CString' id#}
