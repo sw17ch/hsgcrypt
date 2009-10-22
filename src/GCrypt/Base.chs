@@ -1089,17 +1089,17 @@ type PrimeCheckFun = FunPtr (Ptr () -> CInt -> MPI -> IO CInt)
         fromIntegral `CSize' -- n
     } -> `Ptr ()' id#}
 
-type FuncAlloc = FunPtr (CUInt -> IO (Ptr ()))
-type FuncAllocSecure = FunPtr (CUInt -> IO (Ptr ()))
+type FuncAlloc = FunPtr (CSize -> IO (Ptr ()))
+type FuncAllocSecure = FunPtr (CSize -> IO (Ptr ()))
 type FuncSecureCheck = FunPtr (Ptr () -> IO CInt)
-type FuncRealloc = FunPtr (Ptr () -> CUInt -> IO (Ptr ()))
+type FuncRealloc = FunPtr (Ptr () -> CSize -> IO (Ptr ()))
 type FuncFree = FunPtr (Ptr () -> IO ())
 
 {#fun gcry_set_allocation_handler {
-        id `FuncAlloc',
-        id `FuncAllocSecure',
+        castFunPtr `FuncAlloc',
+        castFunPtr `FuncAllocSecure',
         id `FuncSecureCheck',
-        id `FuncRealloc',
+        castFunPtr `FuncRealloc',
         id `FuncFree'
     } -> `()'#}
 
@@ -1115,10 +1115,10 @@ type FuncError = FunPtr (Ptr () -> CInt -> Ptr CChar -> IO ())
     } -> `()'#}
     -}
 
-type FunNoMem = FunPtr (Ptr () -> CUInt -> CUInt -> IO CInt)
+type FunNoMem = FunPtr (Ptr () -> CSize -> CUInt -> IO CInt)
 
 {#fun gcry_set_outofcore_handler {
-        id `FunNoMem',
+        castFunPtr `FunNoMem',
         id `Ptr ()' -- cb_data
     } -> `()'#}
 
