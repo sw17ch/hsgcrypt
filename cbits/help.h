@@ -56,5 +56,11 @@ void wrap_gcry_md_stop_debug(gcry_md_hd_t h, const char * suffix);
 gcry_error_t wrap_gcry_md_test_algo(int algo);
 int wrap_gcry_pk_test_algo(int algo);
 
+/* Some static inline functions we need to wrap: */
+gcry_err_code_t wrap_gcry_err_code(gcry_error_t code);
+gcry_error_t wrap_gcry_error (gcry_err_code_t code);
+gcry_err_source_t wrap_gcry_err_source (gcry_error_t err);
+gcry_error_t wrap_gcry_err_make (gcry_err_source_t source, gcry_err_code_t code);
+
 #endif /* __GCRYPT_HELP__ */
 

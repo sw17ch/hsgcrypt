@@ -40,7 +40,7 @@ toIntEnum = toEnum . fromIntegral
 
 {- Pointer types used by libgcrypt -}
 {#pointer gcry_ac_handle_t as ACHandle newtype#}
-{#pointer gcry_ac_data_t as ACData newtype#} deriving (Storable)
+{#pointer gcry_ac_data_t as ACData newtype#} deriving (Show,Storable)
 {#pointer *gcry_ac_io_t as ACIO newtype#}
 {#pointer gcry_ac_key_t as ACKey newtype#}
 {#pointer gcry_mpi_t as MPI newtype#}
@@ -545,7 +545,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromIntegral `CSize'
     } -> `()'#}
 
-{#fun gcry_err_code {
+{#fun wrap_gcry_err_code as gcry_err_code {
         fromIntegral `GCry_Error'
     } -> `GCry_Err_Code' toIntEnum#}
 
@@ -557,7 +557,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         fromEnumInt `GCry_Err_Code'
     } -> `CInt' id#}
 
-{#fun gcry_err_make {
+{#fun wrap_gcry_err_make as gcry_err_make {
         fromEnumInt `GCry_Err_Source',
         fromEnumInt `GCry_Err_Code'
     } -> `GCry_Error' fromIntegral#}
@@ -567,11 +567,11 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `CInt'
     } -> `GCry_Error' fromIntegral#}
 
-{#fun gcry_err_source {
+{#fun wrap_gcry_err_source as gcry_err_source {
         fromIntegral `GCry_Error'
     } -> `GCry_Err_Source' toIntEnum#}
 
-{#fun gcry_error {
+{#fun wrap_gcry_error as gcry_error {
         fromEnumInt `GCry_Err_Code'
     } -> `GCry_Error' fromIntegral#}
 

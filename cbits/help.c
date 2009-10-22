@@ -114,3 +114,25 @@ int wrap_gcry_pk_test_algo(int algo)
 {
     return gcry_pk_test_algo(algo);
 }
+
+/* Several static inline functions need wrappers too... */
+gcry_err_code_t wrap_gcry_err_code(gcry_error_t code)
+{
+    return gcry_err_code(code);
+}
+
+gcry_error_t wrap_gcry_error (gcry_err_code_t code)
+{
+  return gcry_error(code);
+}
+
+gcry_err_source_t wrap_gcry_err_source (gcry_error_t err)
+{
+  return gcry_err_source(err);
+}
+
+gcry_error_t wrap_gcry_err_make (gcry_err_source_t source, gcry_err_code_t code)
+{
+  return gcry_err_make(source, code);
+}
+
