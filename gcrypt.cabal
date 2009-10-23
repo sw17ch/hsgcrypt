@@ -29,6 +29,15 @@ Library
         GCrypt.AsymmetricCrypto.Other
         GCrypt.AsymmetricCrypto.Crypto
         GCrypt.AsymmetricCrypto.Data
+        GCrypt.MPI
+        GCrypt.MPI.Comp
+        GCrypt.MPI.Bits
+        GCrypt.MPI.Calc
+        GCrypt.MPI.Basic
+        GCrypt.MPI.Format
+        GCrypt.MPI.Misc
+        GCrypt.MPI.Data
+
         GPG.Error
 
     ghc-options:        -Wall -threaded
