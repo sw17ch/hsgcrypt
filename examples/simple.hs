@@ -4,6 +4,6 @@ import GCrypt.AsymmetricCrypto.Data
 
 main :: IO ()
 main = do
-    (Right d) <- newData
+    (Right d) <- dataNew
     print d
-    destroyData d
+    dataDestroy d
