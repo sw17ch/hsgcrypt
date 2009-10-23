@@ -1,7 +1,7 @@
 module GCrypt.AsymmetricCrypto.Data (
     ACData,
-    newData,
-    destroyData,
+    dataNew,
+    dataDestroy,
 ) where
 
 import Foreign.Storable
@@ -24,13 +24,13 @@ newWith f = do
     return (p',r)
 
 -- |gcry_ac_data_new
-newData :: IO (Either GCry_Error ACData)
-newData = do
+dataNew :: IO (Either GCry_Error ACData)
+dataNew = do
     (p,r) <- newWith (gcry_ac_data_new . ACDataPtr)
     case (toIntEnum r) of
          GPG_ERR_NO_ERROR -> return $ Right p
          _ -> return $ Left r
 
-destroyData :: ACData -> IO ()
-destroyData = gcry_ac_data_destroy
-    
+dataDestroy :: ACData -> IO ()
+dataDestroy = gcry_ac_data_destroy
+   
