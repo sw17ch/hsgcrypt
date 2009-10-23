@@ -81,7 +81,7 @@ type Names = Ptr CString
 {#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq)#}
 {#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq)#}
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
-{#enum gcry_mpi_format as GCry_MPI_Format {} deriving (Eq)#}
+{#enum gcry_mpi_format as MPIFormat {} deriving (Eq)#}
 {#enum gcry_mpi_flag as GCry_MPI_Flag {} deriving (Eq)#}
 {#enum gcry_random_level as GCry_Random_Level {} deriving (Eq)#}
 
@@ -733,7 +733,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     } -> `()'#}
 
 {#fun gcry_mpi_aprint {
-        fromEnumInt `GCry_MPI_Format',
+        fromEnumInt `MPIFormat',
         id `Ptr (Ptr CUChar)',
         id `CSizePtr',
         id `MPI'
@@ -859,7 +859,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
     } -> `()'#}
 
 {#fun gcry_mpi_print {
-        fromEnumInt `GCry_MPI_Format',
+        fromEnumInt `MPIFormat',
         id `Ptr CUChar',
         fromIntegral `CSize',
         id `CSizePtr',
@@ -884,7 +884,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_mpi_scan {
         unMPIPtr `MPIPtr', -- r_mpi
-        fromEnumInt `GCry_MPI_Format', -- format
+        fromEnumInt `MPIFormat', -- format
         id `Ptr ()', -- buffer
         fromIntegral `CSize', -- buflen
         id `CSizePtr' -- nscanned
