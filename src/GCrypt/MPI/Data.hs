@@ -1,1 +1,6 @@
-module GCrypt.MPI.Data where
+module GCrypt.MPI.Data (
+    MPI,
+) where
+
+import GCrypt.Base
+
