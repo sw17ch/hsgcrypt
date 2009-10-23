@@ -39,20 +39,20 @@ toIntEnum = toEnum . fromIntegral
  -}
 
 {- Pointer types used by libgcrypt -}
-{#pointer gcry_ac_handle_t as ACHandle newtype#}
+{#pointer gcry_ac_handle_t as ACHandle newtype#} deriving (Show,Storable)
 {#pointer gcry_ac_data_t as ACData newtype#} deriving (Show,Storable)
-{#pointer *gcry_ac_io_t as ACIO newtype#}
-{#pointer gcry_ac_key_t as ACKey newtype#}
-{#pointer gcry_mpi_t as MPI newtype#}
-{#pointer gcry_sexp_t as SExp newtype#}
-{#pointer gcry_ac_key_pair_t as ACKeyPair newtype#}
-{#pointer gcry_cipher_hd_t as CipherHd newtype#}
-{#pointer *gcry_cipher_spec_t as CipherSpec newtype#}
-{#pointer gcry_module_t as GCryModule newtype#}
-{#pointer gcry_md_hd_t as GCryMdHd newtype#}
-{#pointer *gcry_md_spec_t as GCryMdSpec newtype#}
-{#pointer *gcry_pk_spec_t as GCryPkSpec newtype#}
-{#pointer *gcry_error_t as GCry_Error_Ptr newtype#}
+{#pointer *gcry_ac_io_t as ACIO newtype#} deriving (Show,Storable)
+{#pointer gcry_ac_key_t as ACKey newtype#} deriving (Show,Storable)
+{#pointer gcry_mpi_t as MPI newtype#} deriving (Show,Storable)
+{#pointer gcry_sexp_t as SExp newtype#} deriving (Show,Storable)
+{#pointer gcry_ac_key_pair_t as ACKeyPair newtype#} deriving (Show,Storable)
+{#pointer gcry_cipher_hd_t as CipherHd newtype#} deriving (Show,Storable)
+{#pointer *gcry_cipher_spec_t as CipherSpec newtype#} deriving (Show,Storable)
+{#pointer gcry_module_t as GCryModule newtype#} deriving (Show,Storable)
+{#pointer gcry_md_hd_t as GCryMdHd newtype#} deriving (Show,Storable)
+{#pointer *gcry_md_spec_t as GCryMdSpec newtype#} deriving (Show,Storable)
+{#pointer *gcry_pk_spec_t as GCryPkSpec newtype#} deriving (Show,Storable)
+{#pointer *gcry_error_t as GCry_Error_Ptr newtype#} deriving (Show,Storable)
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
