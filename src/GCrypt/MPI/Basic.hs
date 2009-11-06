@@ -5,6 +5,7 @@ module GCrypt.MPI.Basic (
     mpiRelease,
     mpiSet,
     mpiSetUI,
+    mpiSwap, -- epic unsafe
 ) where
 
 import Data.Word
