@@ -4,6 +4,8 @@
 
 module GCrypt.Base where
 
+import GCrypt.Util
+
 import Foreign.Storable
 import Foreign.C.Types
 import Foreign.C.String
@@ -17,17 +19,12 @@ import GPG.Error
 
 #include "help.h"
 
-{- Helper functions to help marshal. -}
-fromEnumInt :: (Num b, Enum a) => a -> b
-fromEnumInt = fromIntegral . fromEnum
-
-toIntEnum :: (Integral a, Enum b) => a -> b
-toIntEnum = toEnum . fromIntegral
-
 {#context lib = "gcrypt" prefix = "gcry"#}
 
 -- This comes into play more than it should
-{#pointer *size_t as CSizePtr newtype#}
+{#pointer *size_t as CSizePtr newtype#} deriving (Show,Storable)
+unCSizePtr :: CSizePtr -> Ptr CSizePtr
+unCSizePtr (CSizePtr p) = p
 
 {-
  - Notes:
