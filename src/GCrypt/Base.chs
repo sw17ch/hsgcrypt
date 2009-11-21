@@ -79,7 +79,7 @@ type Names = Ptr CString
 {#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq)#}
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
 {#enum gcry_mpi_format as MPIFormat {} deriving (Eq)#}
-{#enum gcry_mpi_flag as GCry_MPI_Flag {} deriving (Eq)#}
+{#enum gcry_mpi_flag as MPIFlag {} deriving (Eq)#}
 {#enum gcry_random_level as GCry_Random_Level {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
@@ -743,7 +743,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_mpi_clear_flag {
         id `MPI',
-        fromEnumInt `GCry_MPI_Flag'
+        fromEnumInt `MPIFlag'
     } -> `()'#}
 
 {#fun gcry_mpi_clear_highbit {
@@ -788,7 +788,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_mpi_get_flag {
         id `MPI',
-        fromEnumInt `GCry_MPI_Flag'
+        fromEnumInt `MPIFlag'
     } -> `CInt' id#}
 
 {#fun gcry_mpi_get_nbits {
@@ -899,7 +899,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_mpi_set_flag {
         id `MPI',
-        fromEnumInt `GCry_MPI_Flag'
+        fromEnumInt `MPIFlag'
     } -> `()'#}
 
 {#fun gcry_mpi_set_highbit {
