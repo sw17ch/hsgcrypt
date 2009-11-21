@@ -4,11 +4,6 @@ module GCrypt.AsymmetricCrypto.Data (
     dataDestroy,
 ) where
 
-import Foreign.Storable
-import Foreign.Ptr
-import Foreign.Marshal.Utils
-import Foreign.Marshal.Alloc
-
 import GCrypt.Util
 
 import GCrypt.Base

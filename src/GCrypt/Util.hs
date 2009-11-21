@@ -3,11 +3,15 @@ module GCrypt.Util (
     toIntEnum,
     newWith,
     newWith2,
+    ULong,
 ) where
 
 import Foreign.Storable
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
+import Foreign.C.Types
+
+type ULong = CULong
 
 {- Helper functions to help marshal. -}
 fromEnumInt :: (Num b, Enum a) => a -> b

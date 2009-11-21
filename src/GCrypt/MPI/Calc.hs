@@ -18,12 +18,11 @@ module GCrypt.MPI.Calc (
 -- and div but ignore it for everything else.
 
 import Prelude hiding (div,mod,gcd)
-import Foreign.C.Types (CULong,CInt)
+import Data.Int
 import Control.Monad
 
 import GCrypt.Base
-
-type ULong = CULong
+import GCrypt.Util
 
 -- |w = u + v
 add :: MPI -> MPI -> MPI -> IO ()
@@ -52,8 +51,9 @@ mulm = gcry_mpi_mulm
 mul2exp :: MPI -> MPI -> ULong -> IO ()
 mul2exp = gcry_mpi_mul_2exp
 
-div :: MPI -> MPI -> MPI -> MPI -> CInt -> IO ()
-div = gcry_mpi_div
+div :: MPI -> MPI -> MPI -> MPI -> Int32 -> IO ()
+div q r dividend divisor rnd = gcry_mpi_div q r dividend divisor round'
+    where round' = fromIntegral rnd
 
 mod :: MPI -> MPI -> MPI -> IO ()
 mod = gcry_mpi_mod
@@ -69,5 +69,5 @@ gcd g a b = do r <- gcry_mpi_gcd g a b
                 
 -- |Set x to the mulplicative inverse of a `mod` b. Retrun true
 -- if the inverse exists.
-invm :: MPI -> MPI -> MPI -> IO CInt
-invm = gcry_mpi_invm
+invm :: MPI -> MPI -> MPI -> IO Int32
+invm x a m = gcry_mpi_invm x a m >>= return . fromIntegral
