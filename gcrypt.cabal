@@ -10,6 +10,7 @@ Stability: experimental
 Category: Cryptography
 Cabal-Version: >= 1.6
 Build-Type: Simple
+Package-URL: git://github.com/sw17ch/hsgcrypt.git 
 
 Extra-Source-Files:
     cbits/help.h
