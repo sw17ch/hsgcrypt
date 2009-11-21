@@ -27,5 +27,5 @@ getFlag = gcry_mpi_get_flag
 clearFlag :: MPI -> MPIFlag -> IO ()
 clearFlag = gcry_mpi_clear_flag
 
-randomize :: MPI -> CUInt -> GCry_Random_Level -> IO ()
+randomize :: MPI -> CUInt -> RandLvl -> IO ()
 randomize = gcry_mpi_randomize

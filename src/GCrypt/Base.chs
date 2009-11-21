@@ -80,7 +80,7 @@ type Names = Ptr CString
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
 {#enum gcry_mpi_format as MPIFormat {} deriving (Eq)#}
 {#enum gcry_mpi_flag as MPIFlag {} deriving (Eq)#}
-{#enum gcry_random_level as GCry_Random_Level {} deriving (Eq)#}
+{#enum gcry_random_level as RandLvl {} deriving (Eq)#}
 
 type GCry_Error = GPG_Error
 type GCry_Err_Code = GPG_Err_Code
@@ -866,7 +866,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_mpi_randomize {
         id `MPI',
         id `CUInt',
-        fromEnumInt `GCry_Random_Level'
+        fromEnumInt `RandLvl'
     } -> `()'#}
 
 {#fun gcry_mpi_release {
@@ -1050,7 +1050,7 @@ type PrimeCheckFun = FunPtr (Ptr () -> CInt -> MPI -> IO CInt)
         unMPIPtrPtr `MPIPtrPtr', -- factors
         id `PrimeCheckFun',    -- cb_func
         id `Ptr ()',           -- cb_arg
-        fromEnumInt `GCry_Random_Level', -- random level
+        fromEnumInt `RandLvl', -- random level
         fromIntegral `ACFlags'
     } -> `GCry_Error' fromIntegral#}
 
@@ -1067,18 +1067,18 @@ type PrimeCheckFun = FunPtr (Ptr () -> CInt -> MPI -> IO CInt)
 
 {#fun gcry_random_bytes {
         fromIntegral `CSize',
-        fromEnumInt `GCry_Random_Level'
+        fromEnumInt `RandLvl'
     } -> `Ptr ()' id#}
 
 {#fun gcry_random_bytes_secure {
         fromIntegral `CSize',
-        fromEnumInt `GCry_Random_Level'
+        fromEnumInt `RandLvl'
     } -> `Ptr ()' id#}
 
 {#fun gcry_randomize {
         id `Ptr ()', -- buffer
         fromIntegral `CSize', -- length
-        fromEnumInt `GCry_Random_Level' -- level
+        fromEnumInt `RandLvl' -- level
     } -> `()'#}
 
 {#fun gcry_realloc {
