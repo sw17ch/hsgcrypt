@@ -2,6 +2,7 @@ module GCrypt.Util (
     fromEnumInt,
     toIntEnum,
     newWith,
+    newWithChecked,
     newWith2,
     ULong,
 ) where
@@ -30,6 +31,15 @@ newWith f = do
     p' <- peek p
     free p
     return (p',r)
+
+-- |When `c` is True, we return `Right ptr`.
+-- When `c` is False, we return `Left ret`.
+newWithChecked :: (Storable a) => (Ptr a -> IO b) -> (b -> Bool) -> IO (Either b a)
+newWithChecked f c = do
+    (p,r) <- newWith f
+    return $ case c r of
+                  True -> Right p
+                  False -> Left r
 
 newWith2 :: (Storable a, Storable b) =>
             (Ptr a -> Ptr b -> IO c) -> IO (a,b,c)
