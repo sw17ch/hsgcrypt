@@ -64,6 +64,11 @@ newtype CipherHdPtr = CipherHdPtr { unCipherHdPtr :: Ptr CipherHd }
 newtype GCryModulePtr = GCryModulePtr { unGCryModulePtr :: Ptr GCryModule }
 newtype GCryMdHdPtr = GCryMdHdPtr {unGCryMdHdPtr :: Ptr GCryMdHd }
 
+-- Extract an ACData from an ACDataPtr
+acPtr2Data :: ACDataPtr -> IO ACData
+acPtr2Data (ACDataPtr p) = peek p
+
+
 -- These will be more concrete later
 type GCry_Options = Ptr ()
 type Idents = Ptr CString
@@ -186,7 +191,7 @@ newtype DataIndex = DataIndex Word32 deriving (Integral,Real,Enum,Num,Ord,Eq,Sho
 
 {#fun gcry_ac_data_length {
         id `ACData'
-    } -> `Int' fromIntegral#}
+    } -> `Word32' fromIntegral#}
 
 {#fun gcry_ac_data_new {
         unACDataPtr `ACDataPtr'
