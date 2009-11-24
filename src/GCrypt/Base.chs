@@ -10,10 +10,8 @@ import Foreign.Storable
 import Foreign.C.Types
 import Foreign.C.String
 import Foreign.Ptr
-import Foreign.Marshal.Alloc
 
 import Data.Word
-import Data.Int
 
 import GPG.Error
 
