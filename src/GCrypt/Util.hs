@@ -4,6 +4,7 @@ module GCrypt.Util (
     newWith,
     newWithChecked,
     newWith2,
+    newWith2Checked,
     ULong,
 ) where
 
@@ -52,3 +53,11 @@ newWith2 f = do
     free p1
     free p2
     return (p1',p2',r)
+
+newWith2Checked :: (Storable a, Storable b) =>
+                   (Ptr a -> Ptr b -> IO c) -> (c -> Bool) -> IO (Either c (a, b))
+newWith2Checked f c = do
+    (a,b,r) <- newWith2 f
+    return $ case c r of
+                  True -> Right (a,b)
+                  False -> Left r

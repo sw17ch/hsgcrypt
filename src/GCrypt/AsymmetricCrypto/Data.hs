@@ -5,6 +5,11 @@ module GCrypt.AsymmetricCrypto.Data (
     dataSet,
     dataCopy,
     dataLength,
+    dataGetName,
+    dataGetIndex,
+    dataToSExp,
+    dataFromSExp,
+    DataIndex,
 ) where
 
 import Foreign.C.String
@@ -47,3 +52,33 @@ dataCopy d = do
 dataLength :: ACData -> IO Word32
 dataLength = gcry_ac_data_length
 
+dataGetName :: ACData -> ACFlags -> CString -> IO (Either GCry_Error MPI)
+dataGetName d fl n = do
+    newWithChecked f checkData
+    where
+        f :: Ptr MPI -> IO GCry_Error
+        f p = gcry_ac_data_get_name d fl n (MPIPtr p)
+
+dataGetIndex :: ACData -> ACFlags -> DataIndex -> IO (Either GCry_Error (CString,MPI))
+dataGetIndex d fl i = do
+    newWith2Checked f checkData
+    where
+        f :: Ptr CString -> Ptr MPI -> IO GCry_Error
+        f s m = gcry_ac_data_get_index d fl i s (MPIPtr m)
+
+dataClear :: ACData -> IO ()
+dataClear = gcry_ac_data_clear
+
+dataToSExp :: ACData -> Ptr (CString) -> IO (Either GCry_Error SExp)
+dataToSExp d cp = do
+    newWithChecked f checkData
+    where
+        f :: Ptr SExp -> IO GCry_Error
+        f sp = gcry_ac_data_to_sexp d (SExpPtr sp) cp
+
+dataFromSExp :: SExp -> Ptr (CString) -> IO (Either GCry_Error ACData)
+dataFromSExp s cp = do
+    newWithChecked f checkData
+    where
+        f :: Ptr ACData -> IO GCry_Error
+        f ap = gcry_ac_data_from_sexp (ACDataPtr ap) s cp
