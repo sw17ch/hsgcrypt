@@ -9,6 +9,7 @@ module GCrypt.AsymmetricCrypto.Data (
     dataGetIndex,
     dataToSExp,
     dataFromSExp,
+    dataClear,
     DataIndex,
 ) where
 
