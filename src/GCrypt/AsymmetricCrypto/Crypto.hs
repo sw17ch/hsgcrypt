@@ -50,6 +50,14 @@ dataVerify h k m d = do
     ret <- gcry_ac_data_verify h k m d
     return $ (toIntEnum ret) == GPG_ERR_NO_ERROR
 
+{- I'll add this stuff when we bump to the next version
+ - of GCrypt (which is less dumb).
+
+import Data.Word
+import Foreign.Marshal.Utils
+import Foreign.C.Types
+import Foreign.Ptr
+
 -- I just discovered that dataEncode/dataDecode actually
 -- never use the flags argument. I'm just passing zero
 -- until the gcrypt authors decide they'll use it...
@@ -57,18 +65,25 @@ dataVerify h k m d = do
 -- EME: Encoding Method for Encryption
 -- EMSA: Encoding MEthod for Signatures with Appendix
 
-{-
-dataEMEEncode :: 
+dataEMEEncode :: OptionsEME
+              -> Ptr Word8
+              -> CSize
+              -> IO (Either GCry_Error (Ptr Word8,CSize))
+dataEMEEncode opt m s = do
+    newWith2Checked fn checkData
+    where
+        fn em em_s = with opt fn'
+        fn' opt' em em_s = gcry_ac_data_encode AC_EME_PKCS_V1_5
+                                               0 (castPtr opt') m s
+                                               em em_s
 dataEMEDecode
 dataEMSAEncode
+
+-- If you're looking for gcry_ac_data_*_scheme, stop. I don't currently
+-- see a good reason to implement the GCrypt's IO objects (which would
+-- require an inordinate amount of effort for something no one would
+-- bother using (no, I can't back this up, just trust me)).
+--
+-- So, yeah, don't bother. I'm not doing it. If some one else wants to,
+-- I'd probably accept the patch.
 -}
-
-{- If you're looking for gcry_ac_data_*_scheme, stop. I don't currently
- - see a good reason to implement the GCrypt's IO objects (which would
- - require an inordinate amount of effort for something no one would
- - bother using (no, I can't back this up, just trust me)).
- -
- - So, yeah, don't bother. I'm not doing it. If some one else wants to,
- - I'd probably accept the patch. -}
-
-
