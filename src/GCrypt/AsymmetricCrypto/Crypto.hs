@@ -49,3 +49,26 @@ dataVerify :: ACHandle -- | handle
 dataVerify h k m d = do
     ret <- gcry_ac_data_verify h k m d
     return $ (toIntEnum ret) == GPG_ERR_NO_ERROR
+
+-- I just discovered that dataEncode/dataDecode actually
+-- never use the flags argument. I'm just passing zero
+-- until the gcrypt authors decide they'll use it...
+
+-- EME: Encoding Method for Encryption
+-- EMSA: Encoding MEthod for Signatures with Appendix
+
+{-
+dataEMEEncode :: 
+dataEMEDecode
+dataEMSAEncode
+-}
+
+{- If you're looking for gcry_ac_data_*_scheme, stop. I don't currently
+ - see a good reason to implement the GCrypt's IO objects (which would
+ - require an inordinate amount of effort for something no one would
+ - bother using (no, I can't back this up, just trust me)).
+ -
+ - So, yeah, don't bother. I'm not doing it. If some one else wants to,
+ - I'd probably accept the patch. -}
+
+
