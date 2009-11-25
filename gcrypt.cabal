@@ -25,9 +25,9 @@ Library
     Other-Modules:
         GCrypt.Common
         GCrypt.Base
+        GCrypt.AsymmetricCrypto.IO
     Exposed-Modules:
         GCrypt.AsymmetricCrypto
-        GCrypt.AsymmetricCrypto.IO
         GCrypt.AsymmetricCrypto.Keys
         GCrypt.AsymmetricCrypto.Handles
         GCrypt.AsymmetricCrypto.Other
