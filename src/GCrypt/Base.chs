@@ -100,11 +100,27 @@ data OptionsEME = OptionsEME {
 
 instance Storable OptionsEME where
     sizeOf _ = {#sizeof gcry_ac_eme_pkcs_v1_5_t#}
+    alignment _ = alignment (undefined :: CLong) -- CSize is CLong which is also the alignment...
+    peek p = do
+        ks <- {#get gcry_ac_eme_pkcs_v1_5_t.key_size#} p
+        return $ OptionsEME (fromIntegral ks)
+    poke p a = {#set gcry_ac_eme_pkcs_v1_5_t.key_size#} p $ fromIntegral (keySize a)
 
 data OptionsEMSA = OptionsEMSA {
     hash :: MDAlgo,
     size :: CSize
 } deriving (Show)
+
+instance Storable OptionsEMSA where
+    sizeOf _ = {#sizeof gcry_ac_emsa_pkcs_v1_5_t#}
+    alignment _ = alignment (undefined :: CLong)
+    peek p = do
+        md <- {#get gcry_ac_emsa_pkcs_v1_5_t.md#} p
+        n  <- {#get gcry_ac_emsa_pkcs_v1_5_t.em_n#} p
+        return $ OptionsEMSA (toEnum $ fromIntegral md) (fromIntegral n)
+    poke p a = do
+        {#set gcry_ac_emsa_pkcs_v1_5_t.md#} p $   (fromIntegral . fromEnum . hash) a
+        {#set gcry_ac_emsa_pkcs_v1_5_t.em_n#} p $ (fromIntegral . size ) a
 
 {-
  - Function definitions. Best reference is the libgcrypt docs.
