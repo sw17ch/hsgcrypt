@@ -36,7 +36,7 @@ unCSizePtr (CSizePtr p) = p
 {- Pointer types used by libgcrypt -}
 {#pointer gcry_ac_handle_t as ACHandle newtype#} deriving (Show,Storable)
 {#pointer gcry_ac_data_t as ACData newtype#} deriving (Show,Storable)
-{#pointer *gcry_ac_io_t as ACIO newtype#} deriving (Show,Storable)
+{#pointer *gcry_ac_io_t as ACIOPtr newtype#} deriving (Show,Storable)
 {#pointer gcry_ac_key_t as ACKey newtype#} deriving (Show,Storable)
 {#pointer gcry_mpi_t as MPI newtype#} deriving (Show,Storable)
 {#pointer gcry_sexp_t as SExp newtype#} deriving (Show,Storable)
@@ -52,7 +52,6 @@ unCSizePtr (CSizePtr p) = p
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
 newtype ACDataPtr = ACDataPtr {unACDataPtr :: Ptr ACData}
-newtype ACIOPtr = ACIOPtr {unACIOPtr :: Ptr ACIO}
 newtype MPIPtr = MPIPtr {unMPIPtr :: Ptr MPI}
 newtype MPIPtrPtr = MPIPtrPtr {unMPIPtrPtr :: Ptr (Ptr MPI)}
 newtype ACKeyPtr = ACKeyPtr {unACKeyPtr :: Ptr ACKey}
@@ -66,6 +65,8 @@ newtype GCryMdHdPtr = GCryMdHdPtr {unGCryMdHdPtr :: Ptr GCryMdHd }
 acPtr2Data :: ACDataPtr -> IO ACData
 acPtr2Data (ACDataPtr p) = peek p
 
+sizeOfACIO :: Int
+sizeOfACIO = {#sizeof gcry_ac_io_t#}
 
 -- These will be more concrete later
 type GCry_Options = Ptr ()
@@ -143,8 +144,8 @@ instance Storable OptionsEMSA where
         fromEnumInt `GCry_EncMethod',
         fromIntegral `ACFlags',
         id `GCry_Options',
-        id `ACIO',
-        id `ACIO'
+        id `ACIOPtr',
+        id `ACIOPtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_data_decrypt {
@@ -161,8 +162,8 @@ instance Storable OptionsEMSA where
         fromIntegral `ACFlags',
         id `GCry_Options',
         id `ACKey',
-        id `ACIO',
-        id `ACIO'
+        id `ACIOPtr',
+        id `ACIOPtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_data_destroy {
@@ -173,8 +174,8 @@ instance Storable OptionsEMSA where
         fromEnumInt `GCry_EncMethod',
         fromIntegral `ACFlags',
         id `GCry_Options',
-        id `ACIO',
-        id `ACIO'
+        id `ACIOPtr',
+        id `ACIOPtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_data_encrypt {
@@ -191,8 +192,8 @@ instance Storable OptionsEMSA where
         fromIntegral `ACFlags',
         id `GCry_Options',
         id `ACKey',
-        id `ACIO',
-        id `ACIO'
+        id `ACIOPtr',
+        id `ACIOPtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_data_from_sexp {
@@ -244,8 +245,8 @@ instance Storable OptionsEMSA where
         fromIntegral `ACFlags',
         id `GCry_Options',
         id `ACKey',
-        id `ACIO',
-        id `ACIO'
+        id `ACIOPtr',
+        id `ACIOPtr'
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_data_to_sexp {
@@ -267,8 +268,8 @@ instance Storable OptionsEMSA where
         fromIntegral `ACFlags',
         id `GCry_Options',
         id `ACKey',
-        id `ACIO',
-        id `ACIO'
+        id `ACIOPtr',
+        id `ACIOPtr'
     } -> `GCry_Error' fromIntegral#}
 
 {- DEPRECIATED -}
@@ -285,27 +286,27 @@ instance Storable OptionsEMSA where
     } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_io_init_readable_string {
-        id `ACIO',
+        id `ACIOPtr',
         id `Ptr CUChar',
         id `CULong'
     } -> `()'#}
 
 {#fun gcry_ac_io_init_writable_string {
-        id `ACIO',
+        id `ACIOPtr',
         id `Ptr (Ptr CUChar)',
         id `Ptr CULong'
     } -> `()'#}
 
 type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CSize -> IO CUInt
 {#fun gcry_ac_io_init_readable_callback {
-        id `ACIO',
+        id `ACIOPtr',
         castFunPtr `FunPtr ReadableCallback',
         id `Ptr ()'
     } -> `()'#}
 
 type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_ac_io_init_writable_callback {
-        id `ACIO',
+        id `ACIOPtr',
         castFunPtr `FunPtr WritableCallback',
         id `Ptr ()'
     } -> `()'#}
