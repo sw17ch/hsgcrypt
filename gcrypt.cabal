@@ -22,8 +22,10 @@ Library
 
     Extra-Libraries: gcrypt
 
-    Exposed-Modules:
+    Other-Modules:
+        GCrypt.Common
         GCrypt.Base
+    Exposed-Modules:
         GCrypt.AsymmetricCrypto
         GCrypt.AsymmetricCrypto.IO
         GCrypt.AsymmetricCrypto.Keys
