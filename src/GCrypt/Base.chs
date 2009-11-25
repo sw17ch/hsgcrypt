@@ -73,17 +73,18 @@ type Idents = Ptr CString
 type Names = Ptr CString
 
 {- Enumerations used by libgcrypt -}
-{#enum gcry_ac_em_t as GCry_EncMethod {} deriving (Eq)#}
-{#enum gcry_ac_scheme_t as GCry_Scheme {} deriving (Eq)#}
-{#enum gcry_ac_id_t as GCry_AC_ID {} deriving (Eq)#}
-{#enum gcry_ac_io_mode_t as GCry_AC_IO_Mode {} deriving (Eq)#}
-{#enum gcry_ac_io_type_t as GCry_AC_IO_Type {} deriving (Eq)#}
-{#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq)#}
-{#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq)#}
-{#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq)#}
-{#enum gcry_mpi_format as MPIFormat {} deriving (Eq)#}
-{#enum gcry_mpi_flag as MPIFlag {} deriving (Eq)#}
-{#enum gcry_random_level as RandLvl {} deriving (Eq)#}
+{#enum gcry_ac_em_t as GCry_EncMethod {} deriving (Eq,Show)#}
+{#enum gcry_ac_scheme_t as GCry_Scheme {} deriving (Eq,Show)#}
+{#enum gcry_ac_id_t as GCry_AC_ID {} deriving (Eq,Show)#}
+{#enum gcry_ac_io_mode_t as GCry_AC_IO_Mode {} deriving (Eq,Show)#}
+{#enum gcry_ac_io_type_t as GCry_AC_IO_Type {} deriving (Eq,Show)#}
+{#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq,Show)#}
+{#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq,Show)#}
+{#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq,Show)#}
+{#enum gcry_mpi_format as MPIFormat {} deriving (Eq,Show)#}
+{#enum gcry_mpi_flag as MPIFlag {} deriving (Eq,Show)#}
+{#enum gcry_random_level as RandLvl {} deriving (Eq,Show)#}
+{#enum gcry_md_algos as MDAlgo {} deriving (Eq,Show)#}
 
 type GCry_Error = GPG_Error
 type GCry_Err_Code = GPG_Err_Code
@@ -92,6 +93,18 @@ type GCry_Err_Source = GPG_Err_Source
 {- Aliased types for libgcrypt -}
 newtype ACFlags   = ACFlags Word32   deriving (Integral,Real,Enum,Num,Ord,Eq,Show)
 newtype DataIndex = DataIndex Word32 deriving (Integral,Real,Enum,Num,Ord,Eq,Show)
+
+data OptionsEME = OptionsEME {
+    keySize :: CSize
+} deriving (Show)
+
+instance Storable OptionsEME where
+    sizeOf _ = {#sizeof gcry_ac_eme_pkcs_v1_5_t#}
+
+data OptionsEMSA = OptionsEMSA {
+    hash :: MDAlgo,
+    size :: CSize
+} deriving (Show)
 
 {-
  - Function definitions. Best reference is the libgcrypt docs.
