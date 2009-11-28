@@ -42,6 +42,8 @@ Library
         GCrypt.MPI.Misc
         GCrypt.MPI.Data
 
+        GCrypt.Util
+
         GPG.Error
 
     ghc-options:        -Wall -threaded
