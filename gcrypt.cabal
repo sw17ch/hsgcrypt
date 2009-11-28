@@ -27,6 +27,7 @@ Library
         GCrypt.Base
         GCrypt.AsymmetricCrypto.IO
     Exposed-Modules:
+        GCrypt
         GCrypt.AsymmetricCrypto
         GCrypt.AsymmetricCrypto.Keys
         GCrypt.AsymmetricCrypto.Handles
@@ -41,6 +42,8 @@ Library
         GCrypt.MPI.Format
         GCrypt.MPI.Misc
         GCrypt.MPI.Data
+
+        GCrypt.Generalities.Error.Strings
 
         GCrypt.Util
 
