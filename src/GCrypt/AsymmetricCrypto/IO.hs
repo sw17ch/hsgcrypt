@@ -3,10 +3,16 @@ module GCrypt.AsymmetricCrypto.IO (
     initWritableString,
     initReadableByteString,
     ACIOPtr,
-    ACIO,
+    ACIO(..),
+    mkACIO,
+    NewStringPtr,
+    NewStringPtrRef,
+    NewStringLnPtr,
+    NewStringLnPtrRef,
 ) where
 
 import Foreign.Ptr
+import Foreign.Storable
 import Foreign.C.Types
 import Foreign.ForeignPtr
 import Data.ByteString (ByteString)
@@ -24,9 +30,6 @@ mkACIO = mallocForeignPtrBytes sizeOfACIO >>= return . ACIO
 initReadableString :: ACIOPtr -> Ptr CUChar -> CULong -> IO ()
 initReadableString = gcry_ac_io_init_readable_string
 
-initWritableString :: ACIOPtr -> Ptr (Ptr CUChar) -> Ptr CULong -> IO ()
-initWritableString = gcry_ac_io_init_writable_string
-
 initReadableByteString :: ByteString -> IO ACIO
 initReadableByteString bs = unsafeUseAsCStringLen bs f
     where
@@ -38,6 +41,22 @@ initReadableByteString bs = unsafeUseAsCStringLen bs f
                                    (fromIntegral l)
             return a
 
-{-
-initWritableByteString ::
--}
+type NewStringPtr = Ptr (Ptr CUChar)
+type NewStringPtrRef = ForeignPtr NewStringPtr
+
+type NewStringLnPtr = Ptr CULong
+type NewStringLnPtrRef = ForeignPtr NewStringLnPtr
+
+initWritableString :: ACIOPtr -> IO (NewStringPtrRef,NewStringLnPtrRef)
+initWritableString p = do
+    s <- mallocForeignPtr :: IO (ForeignPtr NewStringPtr)
+    l <- mallocForeignPtr :: IO (ForeignPtr NewStringLnPtr)
+
+    s' <- peekFrn s
+    l' <- peekFrn l
+
+    gcry_ac_io_init_writable_string p s' l'
+    return (s,l)
+
+    where
+        peekFrn ptr = withForeignPtr ptr $ \ptr' -> peek ptr'

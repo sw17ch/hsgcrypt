@@ -3,12 +3,29 @@ module GCrypt.AsymmetricCrypto.Crypto (
     dataDecrypt,
     dataSign,
     dataVerify,
+    dataEMEEncode,
+
+    OptionsEME(..),
+    OptionsEMSA(..),
 ) where
 
 import GCrypt.Base
 import GCrypt.Util
 import GCrypt.Common
+import GCrypt.AsymmetricCrypto.IO
 import GPG.Error
+
+import Control.Monad
+import Data.Word
+import Data.ByteString
+import Data.ByteString.Unsafe
+
+import Foreign.Ptr
+import Foreign.C.Types
+import Foreign.ForeignPtr
+import Foreign.Marshal.Utils
+import Foreign.Marshal.Alloc
+import Foreign.Storable
 
 -- |Returns either an error or the encrypted data
 -- inside an ACData.
@@ -50,40 +67,37 @@ dataVerify h k m d = do
     ret <- gcry_ac_data_verify h k m d
     return $ (toIntEnum ret) == GPG_ERR_NO_ERROR
 
-{- I'll add this stuff when we bump to the next version
- - of GCrypt (which is less dumb).
+dataEMEEncode :: OptionsEME -> ByteString -> IO (Either GCry_Error ByteString)
+dataEMEEncode o s = do
+    r_io <- initReadableByteString s
+    w_io <- mkACIO
 
-import Data.Word
-import Foreign.Marshal.Utils
-import Foreign.C.Types
-import Foreign.Ptr
+    let w_io' = unACIO w_io
 
--- I just discovered that dataEncode/dataDecode actually
--- never use the flags argument. I'm just passing zero
--- until the gcrypt authors decide they'll use it...
+    (ns,nl) <- withForeignPtr w_io' $ \w_io'' ->
+        initWritableString (ACIOPtr $ castPtr w_io'')
 
--- EME: Encoding Method for Encryption
--- EMSA: Encoding MEthod for Signatures with Appendix
+    ret <- with o $ \o' ->
+        withForeignPtr (unACIO r_io) $ \r' ->
+            withForeignPtr (unACIO r_io) $ \w' ->
+                gcry_ac_data_encode AC_EME_PKCS_V1_5 0
+                    (castPtr o')
+                    (ACIOPtr $ castPtr r')
+                    (ACIOPtr $ castPtr w')
+    case toIntEnum ret of 
+        GPG_ERR_NO_ERROR -> (s_l_2_bs ns nl) >>= return . Right
+        _                -> return $ Left ret
 
-dataEMEEncode :: OptionsEME
-              -> Ptr Word8
-              -> CSize
-              -> IO (Either GCry_Error (Ptr Word8,CSize))
-dataEMEEncode opt m s = do
-    newWith2Checked fn checkData
     where
-        fn em em_s = with opt fn'
-        fn' opt' em em_s = gcry_ac_data_encode AC_EME_PKCS_V1_5
-                                               0 (castPtr opt') m s
-                                               em em_s
-dataEMEDecode
-dataEMSAEncode
+        s_l_2_bs :: NewStringPtrRef -> NewStringLnPtrRef -> IO ByteString
+        s_l_2_bs ns nl =
+            withForeignPtr ns $ \ns' ->
+            withForeignPtr nl $ \nl' -> do
+                toFreeStr <- peek ns'
+                toFreeLn  <- peek nl'
+                str <- peek toFreeStr
+                ln  <- peek toFreeLn
+                unsafePackCStringFinalizer (castPtr str)
+                                           (fromIntegral ln)
+                                           (free toFreeStr >> free toFreeLn)
 
--- If you're looking for gcry_ac_data_*_scheme, stop. I don't currently
--- see a good reason to implement the GCrypt's IO objects (which would
--- require an inordinate amount of effort for something no one would
--- bother using (no, I can't back this up, just trust me)).
---
--- So, yeah, don't bother. I'm not doing it. If some one else wants to,
--- I'd probably accept the patch.
--}
