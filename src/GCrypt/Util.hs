@@ -6,12 +6,15 @@ module GCrypt.Util (
     newWith2,
     newWith2Checked,
     ULong,
+    catchToMaybe,
 ) where
 
 import Foreign.Storable
 import Foreign.Ptr
 import Foreign.Marshal.Alloc
 import Foreign.C.Types
+
+import Control.Monad
 
 type ULong = CULong
 
@@ -61,3 +64,6 @@ newWith2Checked f c = do
     return $ case c r of
                   True -> Right (a,b)
                   False -> Left r
+
+catchToMaybe :: (IO a) -> IO (Maybe a)
+catchToMaybe a = catch (liftM Just a) (\_ -> return Nothing)
