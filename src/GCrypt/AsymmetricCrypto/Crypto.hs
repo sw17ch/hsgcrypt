@@ -67,7 +67,9 @@ dataVerify h k m d = do
     return $ (toIntEnum ret) == GPG_ERR_NO_ERROR
 
 dataEMEEncode :: OptionsEME -> ByteString -> IO (Either String ByteString)
-dataEMEEncode o s = do
+dataEMEEncode o@(OptionsEME sze) s | sze < 88 = return $ Left segfaultWarning
+                                   | otherwise = do
+
     r_io <- initReadableByteString s
     w_io <- mkACIO
 
@@ -78,7 +80,7 @@ dataEMEEncode o s = do
 
     ret <- with o $ \o' ->
         withForeignPtr (unACIO r_io) $ \r' ->
-            withForeignPtr (unACIO r_io) $ \w' ->
+            withForeignPtr (unACIO w_io) $ \w' ->
                 gcry_ac_data_encode AC_EME_PKCS_V1_5 0
                     (castPtr o')
                     (ACIOPtr $ castPtr r')
@@ -98,3 +100,8 @@ dataEMEEncode o s = do
                 unsafePackCStringFinalizer (castPtr str)
                                            (fromIntegral ln)
                                            (gcry_free $ castPtr str)
+
+segfaultWarning :: String
+segfaultWarning = unlines [
+    "Error: The size you passed to dataEMEEncode in OptionsEME is too short.",
+    "libgcrypt would segfault if I allowed execution. I'm quitting now." ]

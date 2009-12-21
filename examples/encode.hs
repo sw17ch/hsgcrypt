@@ -7,7 +7,7 @@ import GCrypt.AsymmetricCrypto.Crypto
 
 main :: IO ()
 main = withGCrypt $ do
-    e <- dataEMEEncode (OptionsEME 64) str
+    e <- dataEMEEncode (OptionsEME 512) str
     print e
     where
         str = pack "Hello World"
