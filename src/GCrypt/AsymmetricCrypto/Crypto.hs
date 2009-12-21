@@ -4,9 +4,11 @@ module GCrypt.AsymmetricCrypto.Crypto (
     dataSign,
     dataVerify,
     dataEMEEncode,
+    dataEMSAEncode,
 
     OptionsEME(..),
     OptionsEMSA(..),
+    MDAlgo(..),
 ) where
 
 import GCrypt.Base
@@ -101,6 +103,38 @@ dataEMEEncode o@(OptionsEME sze) s | sze < 88 = return $ Left segfaultWarning
                                            (fromIntegral ln)
                                            (gcry_free $ castPtr str)
 
+dataEMSAEncode :: OptionsEMSA -> ByteString -> IO (Either String ByteString)
+dataEMSAEncode o s = do
+    r_io <- initReadableByteString s
+    w_io <- mkACIO
+
+    let w_io' = unACIO w_io
+
+    (ns,nl) <- withForeignPtr w_io' $ \w_io'' ->
+        initWritableString (ACIOPtr $ castPtr w_io'')
+
+    ret <- with o $ \o' ->
+        withForeignPtr (unACIO r_io) $ \r' ->
+            withForeignPtr (unACIO w_io) $ \w' ->
+                gcry_ac_data_encode AC_EMSA_PKCS_V1_5 0
+                    (castPtr o')
+                    (ACIOPtr $ castPtr r')
+                    (ACIOPtr $ castPtr w')
+
+    case ret of 
+        0 -> (s_l_2_bs ns nl) >>= return . Right
+        _ -> strerror ret >>= return . Left
+
+    where
+        s_l_2_bs :: ForeignPtr (Ptr CUChar) -> ForeignPtr CULong -> IO ByteString
+        s_l_2_bs ns nl =
+            withForeignPtr ns $ \ns' ->
+            withForeignPtr nl $ \nl' -> do
+                str <- peek ns'
+                ln  <- peek nl'
+                unsafePackCStringFinalizer (castPtr str)
+                                           (fromIntegral ln)
+                                           (gcry_free $ castPtr str)
 segfaultWarning :: String
 segfaultWarning = unlines [
     "Error: The size you passed to dataEMEEncode in OptionsEME is too short.",
