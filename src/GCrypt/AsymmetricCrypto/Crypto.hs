@@ -4,6 +4,7 @@ module GCrypt.AsymmetricCrypto.Crypto (
     dataSign,
     dataVerify,
     dataEMEEncode,
+    dataEMEDecode,
     dataEMSAEncode,
 
     OptionsEME(..),
@@ -105,6 +106,28 @@ genEncode o s m = do
         _ -> strerror ret >>= return . Left
     where
         ptr2AP = ACIOPtr . castPtr
+
+dataEMEDecode :: OptionsEME -> ByteString -> IO (Either String ByteString)
+dataEMEDecode o s = do
+    r_io <- initReadableByteString s
+    w_io <- mkACIO
+
+    let w_io' = unACIO w_io
+
+    (ns,nl) <- withForeignPtr w_io' $ \w_io'' ->
+        initWritableString (ptr2AP w_io'')
+
+    ret <- with o $ \o' ->
+        withForeignPtr2 (unACIO r_io) (unACIO w_io) $ \r' w' ->
+            gcry_ac_data_decode AC_EME_PKCS_V1_5 0
+                (castPtr o') (ptr2AP r') (ptr2AP w')
+
+    case ret of 
+        0 -> (s_l_2_bs ns nl) >>= return . Right
+        _ -> strerror ret >>= return . Left
+    where
+        ptr2AP = ACIOPtr . castPtr
+    
 
 s_l_2_bs :: ForeignPtr (Ptr CUChar) -> ForeignPtr CULong -> IO ByteString
 s_l_2_bs ns nl =
