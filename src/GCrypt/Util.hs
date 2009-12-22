@@ -7,10 +7,13 @@ module GCrypt.Util (
     newWith2Checked,
     ULong,
     catchToMaybe,
+
+    withForeignPtr2,
 ) where
 
 import Foreign.Storable
 import Foreign.Ptr
+import Foreign.ForeignPtr
 import Foreign.Marshal.Alloc
 import Foreign.C.Types
 
@@ -67,3 +70,10 @@ newWith2Checked f c = do
 
 catchToMaybe :: (IO a) -> IO (Maybe a)
 catchToMaybe a = catch (liftM Just a) (\_ -> return Nothing)
+
+withForeignPtr2 :: ForeignPtr a
+                -> ForeignPtr b
+                -> (Ptr a -> Ptr b -> IO c)
+                -> IO c
+withForeignPtr2 p1 p2 e = withForeignPtr p1 $ \ p1' ->
+                          withForeignPtr p2 $ \ p2' -> e p1' p2'
