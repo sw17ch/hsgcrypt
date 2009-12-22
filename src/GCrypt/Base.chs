@@ -48,6 +48,7 @@ unCSizePtr (CSizePtr p) = p
 {#pointer *gcry_md_spec_t as GCryMdSpec newtype#} deriving (Show,Storable)
 {#pointer *gcry_pk_spec_t as GCryPkSpec newtype#} deriving (Show,Storable)
 {#pointer *gcry_error_t as GCry_Error_Ptr newtype#} deriving (Show,Storable)
+{#pointer *gcry_ac_key_spec_rsa_t as ACKeySpecRSAPtr newtype#} deriving (Show,Storable)
 
 -- Sometimes we need pointers-to-pointers
 newtype ACHandlePtr = ACHandlePtr {unACHandlePtr :: Ptr ACHandle}
@@ -79,7 +80,7 @@ type Names = Ptr CString
 {#enum gcry_ac_id_t as GCry_AC_ID {} deriving (Eq,Show)#}
 {#enum gcry_ac_io_mode_t as GCry_AC_IO_Mode {} deriving (Eq,Show)#}
 {#enum gcry_ac_io_type_t as GCry_AC_IO_Type {} deriving (Eq,Show)#}
-{#enum gcry_ac_key_type_t as GCry_AC_Key_Type {} deriving (Eq,Show)#}
+{#enum gcry_ac_key_type_t as ACKeyType {} deriving (Eq,Show)#}
 {#enum gcry_ctl_cmds as GCry_Ctl_Cmd {} deriving (Eq,Show)#}
 {#enum gcry_cipher_algos as GCry_Cipher_Algo {} deriving (Eq,Show)#}
 {#enum gcry_mpi_format as MPIFormat {} deriving (Eq,Show)#}
@@ -334,7 +335,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_ac_key_init {
         unACKeyPtr `ACKeyPtr',
         id `ACHandle',
-        fromEnumInt `GCry_AC_Key_Type',
+        fromEnumInt `ACKeyType',
         id `ACData'
     } -> `GCry_Error' fromIntegral#}
 
@@ -344,15 +345,20 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_ac_key_pair_extract {
         id `ACKeyPair',
-        fromEnumInt `GCry_AC_Key_Type'
+        fromEnumInt `ACKeyType'
     } -> `ACKey' id#}
+
+
+
+keySpec2Ptr :: ACKeySpecRSAPtr -> Ptr b
+keySpec2Ptr (ACKeySpecRSAPtr p) = castPtr p
 
 -- NOTE: Last parameter is always nullPtr.
 -- Currently unimplemented by libgcrypt.
 {#fun gcry_ac_key_pair_generate {
         id `ACHandle',
         id `CUInt',
-        id `Ptr ()',
+        keySpec2Ptr `ACKeySpecRSAPtr',
         unACKeyPairPtr `ACKeyPairPtr',
         unMPIPtrPtr `MPIPtrPtr'
     } -> `GCry_Error' fromIntegral#}
