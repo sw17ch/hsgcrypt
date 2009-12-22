@@ -8,7 +8,6 @@ module GCrypt.AsymmetricCrypto.IO (
 ) where
 
 import Foreign.Ptr
-import Foreign.Storable
 import Foreign.C.Types
 import Foreign.ForeignPtr
 import Data.ByteString (ByteString)
