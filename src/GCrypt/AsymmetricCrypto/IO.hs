@@ -46,6 +46,3 @@ initWritableString p = do
         gcry_ac_io_init_writable_string p s' l'
 
     return (s,l)
-
-    where
-        peekFrn ptr = withForeignPtr ptr $ \ptr' -> peek ptr'
