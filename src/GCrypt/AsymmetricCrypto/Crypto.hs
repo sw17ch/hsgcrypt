@@ -68,44 +68,33 @@ dataVerify h k m d = do
     ret <- gcry_ac_data_verify h k m d
     return $ (toIntEnum ret) == GPG_ERR_NO_ERROR
 
+-- Cast a (Ptr ACIO) to an ACIOPtr
+ptr2AP :: Ptr ACIO -> ACIOPtr
+ptr2AP = ACIOPtr . castPtr
+
 dataEMEEncode :: OptionsEME -> ByteString -> IO (Either String ByteString)
 dataEMEEncode o@(OptionsEME sze) s | sze < 88 = return $ Left segfaultWarning
-                                   | otherwise = do
-    r_io <- initReadableByteString s
-    w_io <- mkACIO
-
-    let w_io' = unACIO w_io
-
-    (ns,nl) <- withForeignPtr w_io' $ \w_io'' ->
-        initWritableString (ACIOPtr $ castPtr w_io'')
-
-    ret <- with o $ \o' ->
-        withForeignPtr2 (unACIO r_io) (unACIO w_io) $ \r' w' ->
-            gcry_ac_data_encode AC_EME_PKCS_V1_5 0
-                (castPtr o')
-                (ACIOPtr $ castPtr r')
-                (ACIOPtr $ castPtr w')
-
-    case ret of 
-        0 -> (s_l_2_bs ns nl) >>= return . Right
-        _ -> strerror ret >>= return . Left
+                                   | otherwise = genEncode o s AC_EME_PKCS_V1_5
 
 dataEMSAEncode :: OptionsEMSA -> ByteString -> IO (Either String ByteString)
-dataEMSAEncode o s = do
+dataEMSAEncode o s = genEncode o s AC_EMSA_PKCS_V1_5
+
+-- Generic encoding function since the interface is just about the same
+-- for dataEMEEncode and dataEMSAEncode.
+genEncode :: (Storable a) => a -> ByteString -> GCry_EncMethod -> IO (Either String ByteString)
+genEncode o s m = do
     r_io <- initReadableByteString s
     w_io <- mkACIO
 
     let w_io' = unACIO w_io
 
     (ns,nl) <- withForeignPtr w_io' $ \w_io'' ->
-        initWritableString (ACIOPtr $ castPtr w_io'')
+        initWritableString (ptr2AP w_io'')
 
     ret <- with o $ \o' ->
         withForeignPtr2 (unACIO r_io) (unACIO w_io) $ \r' w' ->
-            gcry_ac_data_encode AC_EMSA_PKCS_V1_5 0
-                (castPtr o')
-                (ACIOPtr $ castPtr r')
-                (ACIOPtr $ castPtr w')
+            gcry_ac_data_encode m 0
+                (castPtr o') (ptr2AP r') (ptr2AP w')
 
     case ret of 
         0 -> (s_l_2_bs ns nl) >>= return . Right
