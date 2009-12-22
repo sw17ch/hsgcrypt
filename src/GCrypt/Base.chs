@@ -129,11 +129,11 @@ instance Storable OptionsEMSA where
 
 {#fun gcry_ac_close {
         id `ACHandle'
-    } -> `()' #}
+    } -> `()' id#}
 
 {#fun gcry_ac_data_clear {
         id `ACData'
-    } -> `()' #}
+    } -> `()' id#}
 
 {#fun gcry_ac_data_copy {
         unACDataPtr `ACDataPtr',
@@ -168,7 +168,7 @@ instance Storable OptionsEMSA where
 
 {#fun gcry_ac_data_destroy {
         id `ACData'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_ac_data_encode {
         fromEnumInt `GCry_EncMethod',
@@ -289,27 +289,27 @@ instance Storable OptionsEMSA where
         id `ACIOPtr',
         id `Ptr CUChar',
         id `CULong'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_ac_io_init_writable_string {
         id `ACIOPtr',
         id `Ptr (Ptr CUChar)',
         id `Ptr CULong'
-    } -> `()'#}
+    } -> `()' id#}
 
 type ReadableCallback = Ptr () -> Ptr CUChar -> Ptr CSize -> IO CUInt
 {#fun gcry_ac_io_init_readable_callback {
         id `ACIOPtr',
         castFunPtr `FunPtr ReadableCallback',
         id `Ptr ()'
-    } -> `()'#}
+    } -> `()' id#}
 
 type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_ac_io_init_writable_callback {
         id `ACIOPtr',
         castFunPtr `FunPtr WritableCallback',
         id `Ptr ()'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_ac_key_data_get {
         id `ACKey'
@@ -317,7 +317,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_ac_key_destroy {
         id `ACKey'        
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_ac_key_get_grip {
         id `ACHandle',
@@ -340,12 +340,12 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_ac_key_pair_destroy {
         id `ACKeyPair'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_ac_key_pair_extract {
         id `ACKeyPair',
         fromEnumInt `GCry_AC_Key_Type'
-    } -> `()'#}
+    } -> `ACKey' id#}
 
 -- NOTE: Last parameter is always nullPtr.
 -- Currently unimplemented by libgcrypt.
@@ -355,7 +355,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `Ptr ()',
         unACKeyPairPtr `ACKeyPairPtr',
         unMPIPtrPtr `MPIPtrPtr'
-    } -> `()'#}
+    } -> `GCry_Error' fromIntegral#}
 
 {#fun gcry_ac_key_test {
         id `ACHandle',
@@ -395,7 +395,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_cipher_close {
         id `CipherHd'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_cipher_ctl {
         id `CipherHd',
@@ -492,7 +492,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_cipher_unregister {
         id `GCryModule'
-    } -> `()'#}
+    } -> `()' id#}
 
 {- gcry_control function bindings. there are a lot of these -}
 
@@ -573,7 +573,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_create_nonce {
         id `Ptr ()',
         fromIntegral `CSize'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun wrap_gcry_err_code as gcry_err_code {
         fromIntegral `GCry_Error'
@@ -613,15 +613,15 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_free {
         id `Ptr ()'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_malloc {
         fromIntegral `CSize'
-    } -> `()'#}
+    } -> `Ptr ()' id#}
 
 {#fun gcry_malloc_secure {
         fromIntegral `CSize'
-    } -> `()'#}
+    } -> `Ptr ()' id#}
 
 {#fun gcry_md_algo_name {
         id `CInt'
@@ -629,7 +629,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_md_close {
         id `GCryMdHd'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_copy {
         unGCryMdHdPtr `GCryMdHdPtr',
@@ -639,7 +639,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_md_debug {
         id `GCryMdHd',
         id `CString'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_enable {
         id `GCryMdHd',
@@ -648,7 +648,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun wrap_gcry_md_final as gcry_md_final {
         id `GCryMdHd'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_get_algo {
         id `GCryMdHd'
@@ -669,7 +669,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `Ptr ()',         -- Digest
         id `Ptr ()',         -- Buffer
         fromIntegral `CSize' -- Length
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_is_enabled {
         id `GCryMdHd',
@@ -698,7 +698,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun wrap_gcry_md_putc as gcry_md_putc {
         id `GCryMdHd',
         id `CInt'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_read {
         id `GCryMdHd',
@@ -713,7 +713,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_md_reset {
         id `GCryMdHd'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_setkey {
         id `GCryMdHd', -- hd
@@ -724,7 +724,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun wrap_gcry_md_start_debug as gcry_md_start_debug {
         id `GCryMdHd', -- hd
         id `CString'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun wrap_gcry_md_test_algo as gcry_md_test_algo {
         id `CInt'
@@ -732,27 +732,27 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_md_unregister {
         id `GCryModule'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_md_write {
         id `GCryMdHd', -- hd
         id `Ptr ()',   -- buffer
         fromIntegral `CSize' -- length
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u + v
 {#fun gcry_mpi_add {
         id `MPI', -- w
         id `MPI', -- u
         id `MPI'  -- v
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u + v
 {#fun gcry_mpi_add_ui {
         id `MPI', -- w
         id `MPI', -- u
         id `CULong'   -- v
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u + v mod M
 {#fun gcry_mpi_addm {
@@ -760,7 +760,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- u
         id `MPI', -- v
         id `MPI'  -- m
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_aprint {
         fromEnumInt `MPIFormat',
@@ -772,17 +772,17 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_mpi_clear_bit {
         id `MPI',
         id `CUInt'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_clear_flag {
         id `MPI',
         fromEnumInt `MPIFlag'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_clear_highbit {
         id `MPI',
         id `CUInt'
-    } -> `()'#}
+    } -> `()' id#}
 
 -- u = v ->  0
 -- u < v -> -1
@@ -807,11 +807,11 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- dividend
         id `MPI', -- divisor
         id `CInt'   -- round
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_dump {
         id `MPI'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_gcd {
         id `MPI', -- g
@@ -845,28 +845,28 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- r
         id `MPI', -- dividend
         id `MPI'  -- divisor
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u * v
 {#fun gcry_mpi_mul {
         id `MPI', -- w
         id `MPI', -- u
         id `MPI'  -- v
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u * 2^e
 {#fun gcry_mpi_mul_2exp {
         id `MPI', -- w
         id `MPI', -- u
         id `CULong' -- e
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u * v
 {#fun gcry_mpi_mul_ui {
         id `MPI', -- w
         id `MPI', -- u
         id `CULong' -- v
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u * v `mod` m
 {#fun gcry_mpi_mulm {
@@ -874,7 +874,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- u
         id `MPI', -- v
         id `MPI'  -- m
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_new {
         id `CUInt'
@@ -886,7 +886,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- b
         id `MPI', -- e
         id `MPI'  -- m
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_print {
         fromEnumInt `MPIFormat',
@@ -900,17 +900,17 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI',
         id `CUInt',
         fromEnumInt `RandLvl'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_release {
         id `MPI'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_rshift {
         id `MPI',
         id `MPI',
         id `CUInt'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_scan {
         unMPIPtr `MPIPtr', -- r_mpi
@@ -928,17 +928,17 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 {#fun gcry_mpi_set_bit {
         id `MPI',
         id `CUInt'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_set_flag {
         id `MPI',
         fromEnumInt `MPIFlag'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_set_highbit {
         id `MPI',
         id `CUInt'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_set_opaque {
         id `MPI',
@@ -960,14 +960,14 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- w
         id `MPI', -- u
         id `MPI'  -- v
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u - v
 {#fun gcry_mpi_sub_ui {
         id `MPI', -- w
         id `MPI', -- u
         id `CULong'  -- v
-    } -> `()'#}
+    } -> `()' id#}
 
 -- w = u - v `mod` m
 {#fun gcry_mpi_subm {
@@ -975,12 +975,12 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
         id `MPI', -- u
         id `MPI', -- v
         id `MPI'  -- m
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_swap {
         id `MPI',
         id `MPI'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_mpi_test_bit {
         id `MPI',
@@ -1061,7 +1061,7 @@ type WritableCallback = Ptr () -> Ptr CUChar -> CSize -> IO CUInt
 
 {#fun gcry_pk_unregister {
         id `GCryModule'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_pk_verify {
         id `SExp', -- sig
@@ -1096,7 +1096,7 @@ type PrimeCheckFun = FunPtr (Ptr () -> CInt -> MPI -> IO CInt)
 
 {#fun gcry_prime_release_factors {
         unMPIPtr `MPIPtr' -- factors
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_random_bytes {
         fromIntegral `CSize',
@@ -1112,7 +1112,7 @@ type PrimeCheckFun = FunPtr (Ptr () -> CInt -> MPI -> IO CInt)
         id `Ptr ()', -- buffer
         fromIntegral `CSize', -- length
         fromEnumInt `RandLvl' -- level
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_realloc {
         id `Ptr ()', -- p
@@ -1131,14 +1131,14 @@ type FuncFree = FunPtr (Ptr () -> IO ())
         id `FuncSecureCheck',
         castFunPtr `FuncRealloc',
         id `FuncFree'
-    } -> `()'#}
+    } -> `()' id#}
 
 type FuncError = FunPtr (Ptr () -> CInt -> Ptr CChar -> IO ())
 
 {#fun gcry_set_fatalerror_handler {
         id `FuncError',
         id `Ptr ()' -- cb_data
-    } -> `()'#}
+    } -> `()' id#}
 
 {- TODO: This Breaks: va_list
 {#fun gcry_set_log_handler {
@@ -1150,14 +1150,14 @@ type FunNoMem = FunPtr (Ptr () -> CSize -> CUInt -> IO CInt)
 {#fun gcry_set_outofcore_handler {
         castFunPtr `FunNoMem',
         id `Ptr ()' -- cb_data
-    } -> `()'#}
+    } -> `()' id#}
 
 type FunProgress = FunPtr (Ptr () -> Ptr CChar -> CInt -> CInt -> CInt -> IO ())
 
 {#fun gcry_set_progress_handler {
         id `FunProgress',
         id `Ptr ()'  -- cb_data
-    } -> `()'#}
+    } -> `()' id#}
 
 {- gcry_sexp_build uses varargs. Use gcry_sexp_build_array.
 {#fun gcry_sexp_build {
@@ -1199,7 +1199,7 @@ type FunFreeFunc = FunPtr (Ptr () -> IO ())
 
 {#fun gcry_sexp_dump {
         id `SExp'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_sexp_find_token {
         id `SExp',
@@ -1242,7 +1242,7 @@ type FunFreeFunc = FunPtr (Ptr () -> IO ())
 
 {#fun gcry_sexp_release {
         id `SExp'
-    } -> `()'#}
+    } -> `()' id#}
 
 {#fun gcry_sexp_sprint {
         id `SExp', -- sexp
