@@ -5,6 +5,9 @@ module GCrypt.AsymmetricCrypto.Keys (
     keyInit,
     keyPairGenerate,
     keyPairExtract,
+    keyDestroy,
+    keyPairDestroy,
+    keyDataGet,
 ) where
 
 import Foreign.Ptr
