@@ -9,15 +9,22 @@ module GCrypt.AsymmetricCrypto.Keys (
     keyPairDestroy,
     keyDataGet,
     keyTest,
+    keyGetNBits,
+    keyGetGrip,
 ) where
 
 import Foreign.Ptr
+import Foreign.ForeignPtr
 import Foreign.C.Types
+
+import Data.Word
+import Data.ByteString.Internal
 
 import GCrypt.Base
 import GCrypt.Common
 import GCrypt.Util
 
+import GPG.Error
 
 {- TODO: Implement this so keyPairGenerate has more flexibility.
 typedef struct gcry_ac_key_spec_rsa
@@ -62,3 +69,25 @@ keyDataGet = gcry_ac_key_data_get
 
 keyTest :: ACHandle -> ACKey -> IO GCry_Error
 keyTest = gcry_ac_key_test
+
+keyGetNBits :: ACHandle -> ACKey -> IO (Either GCry_Error Word32)
+keyGetNBits h k = do
+    r <- newWithChecked f checkData
+
+    return $ case r of
+                Left v  -> Left v
+                Right v -> Right $ fromIntegral v
+    where
+        f :: Ptr CUInt -> IO GCry_Error
+        f ptr = gcry_ac_key_get_nbits h k ptr
+
+keyGetGrip :: ACHandle -> ACKey -> IO (Either GCry_Error ByteString)
+keyGetGrip h k = do
+    fp <- mallocForeignPtrBytes numBytes
+    r <- withForeignPtr fp $ \p -> gcry_ac_key_get_grip h k p
+    case (toIntEnum r) of
+        GPG_ERR_NO_ERROR -> return . Right $ mkBS fp
+        _                -> return $ Left r
+    where
+        mkBS p = fromForeignPtr (castForeignPtr p) 0 numBytes
+        numBytes = 20
