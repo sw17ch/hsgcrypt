@@ -8,6 +8,7 @@ module GCrypt.AsymmetricCrypto.Keys (
     keyDestroy,
     keyPairDestroy,
     keyDataGet,
+    keyTest,
 ) where
 
 import Foreign.Ptr
@@ -58,3 +59,6 @@ keyPairDestroy = gcry_ac_key_pair_destroy
 
 keyDataGet :: ACKey -> IO ACData
 keyDataGet = gcry_ac_key_data_get
+
+keyTest :: ACHandle -> ACKey -> IO GCry_Error
+keyTest = gcry_ac_key_test
