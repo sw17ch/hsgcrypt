@@ -4,6 +4,7 @@ module GCrypt.AsymmetricCrypto.Keys (
     ACKeyPair,
     keyInit,
     keyPairGenerate,
+    keyPairExtract,
 ) where
 
 import Foreign.Ptr
@@ -42,3 +43,15 @@ keyPairGenerate h n {- s -} = do
         f kpair = gcry_ac_key_pair_generate h n (ACKeySpecRSAPtr nullPtr)
             (ACKeyPairPtr kpair)
             (MPIPtrPtr nullPtr)
+
+keyPairExtract :: ACKeyPair -> ACKeyType -> IO ACKey
+keyPairExtract = gcry_ac_key_pair_extract
+
+keyDestroy :: ACKey -> IO ()
+keyDestroy = gcry_ac_key_destroy
+
+keyPairDestroy :: ACKeyPair -> IO ()
+keyPairDestroy = gcry_ac_key_pair_destroy
+
+keyDataGet :: ACKey -> IO ACData
+keyDataGet = gcry_ac_key_data_get
